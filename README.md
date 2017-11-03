@@ -4,6 +4,9 @@
 * https://github.com/virtuoushub/awesome-gamedev
 * https://github.com/virtuoushub/fuzzy-octo-shame
 * https://github.com/whoa-algebraic/game-off-2016
+* https://www.piskelapp.com/
+* https://www.bfxr.net/
+* http://drpetter.se/project_sfxr.html
 
 ### game jam boilerplate
 From https://itch.io/jam/game-off-2017
