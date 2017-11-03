@@ -4,9 +4,13 @@ package com.colapietro.throwback.lwjgl;
  * @author Peter Colapietro.
  */
 public enum RGBA {
-    RED(1.0f, 0.0f, 0.0f, 0.0f),
-    GREEN(0.0f, 1.0f, 0.0f, 0.0f),
-    BLUE(0.0f, 0.0f, 1.0f, 0.0f);
+    RED(RGB.RED, 0.0f),
+    GREEN(RGB.GREEN, 0.0f),
+    BLUE(RGB.BLUE, 0.0f),
+    WHITE(RGB.WHITE, 0.0f),
+    BLACK(RGB.BLUE, 0.0f),
+    YELLOW(RGB.YELLOW, 0.0f),
+    PINK(RGB.PINK, 0.0f),;
 
     final float red;
     final float green;
@@ -15,15 +19,13 @@ public enum RGBA {
 
     /**
      *
-     * @param red   the value to which to clear the R channel of the color buffer
-     * @param green the value to which to clear the G channel of the color buffer
-     * @param blue  the value to which to clear the B channel of the color buffer
-     * @param alpha the value to which to clear the A channel of the color buffer
+     * @param rgb the enum to which
+     * @param alpha the value of the color buffer
      */
-    RGBA(float red, float green, float blue, float alpha) {
-        this.red = red;
-        this.green = green;
-        this.blue = blue;
+    RGBA(RGB rgb, float alpha) {
+        this.red = rgb.red;
+        this.green = rgb.green;
+        this.blue = rgb.blue;
         this.alpha = alpha;
     }
 }
