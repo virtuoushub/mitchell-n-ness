@@ -8,6 +8,14 @@
 * https://www.bfxr.net/
 * http://drpetter.se/project_sfxr.html
 
+## Controllers
+GUID | Controller Name
+--- | ---
+030000004c050000c405000000010000 | PS4 Controller
+030000005e0400008e02000000000000 | X360 Controller
+
+(why is it not 03000000c6240000045d000000000000,Xbox 360 Wired Controller?)
+
 ### game jam boilerplate
 From https://itch.io/jam/game-off-2017
 
