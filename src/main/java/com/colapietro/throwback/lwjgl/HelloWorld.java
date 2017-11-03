@@ -7,6 +7,10 @@ import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
 
 import java.nio.*;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
@@ -19,10 +23,15 @@ import static org.lwjgl.system.MemoryUtil.*;
  */
 public class HelloWorld {
 
+    private static final int WIDTH = 800;
+    private static final int HEIGHT = 600;
     // The window handle
     private long window;
+    private Set<Integer> controllers;
+    private Map<Integer, Boolean> controllersAdded;
+    private static final int NUMBER_OF_SUPPORTED_GLFW_JOYSTICKS = GLFW_JOYSTICK_LAST + 1;
 
-    public void run() {
+    private void run() {
         System.out.println("Hello LWJGL " + Version.getVersion() + "!");
 
         init();
@@ -43,8 +52,9 @@ public class HelloWorld {
         GLFWErrorCallback.createPrint(System.err).set();
 
         // Initialize GLFW. Most GLFW functions will not work before doing this.
-        if ( !glfwInit() )
+        if ( !glfwInit() ) {
             throw new IllegalStateException("Unable to initialize GLFW");
+        }
 
         // Configure GLFW
         glfwDefaultWindowHints(); // optional, the current window hints are already the default
@@ -52,14 +62,16 @@ public class HelloWorld {
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
 
         // Create the window
-        window = glfwCreateWindow(300, 300, "Hello World!", NULL, NULL);
-        if ( window == NULL )
+        window = glfwCreateWindow(WIDTH, HEIGHT, "Hello World!", NULL, NULL);
+        if ( window == NULL ) {
             throw new RuntimeException("Failed to create the GLFW window");
+        }
 
         // Setup a key callback. It will be called every time a key is pressed, repeated or released.
         glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
-            if ( key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE )
+            if ( key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE ) {
                 glfwSetWindowShouldClose(window, true); // We will detect this in the rendering loop
+            }
         });
 
         // Get the thread stack and push a new frame
@@ -88,6 +100,9 @@ public class HelloWorld {
 
         // Make the window visible
         glfwShowWindow(window);
+        assert NUMBER_OF_SUPPORTED_GLFW_JOYSTICKS == 16;
+        controllers = new HashSet<>(NUMBER_OF_SUPPORTED_GLFW_JOYSTICKS);
+        controllersAdded = new ConcurrentHashMap<>(NUMBER_OF_SUPPORTED_GLFW_JOYSTICKS);
     }
 
     private void loop() {
@@ -99,11 +114,12 @@ public class HelloWorld {
         GL.createCapabilities();
 
         // Set the clear color
-        glClearColor(0.0f, 0.0f, 1.0f, 0.0f);
+        clearColor(RGBA.BLUE);
 
         // Run the rendering loop until the user has attempted to close
         // the window or has pressed the ESCAPE key.
         while ( !glfwWindowShouldClose(window) ) {
+            detectControllers();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
             glfwSwapBuffers(window); // swap the color buffers
@@ -114,8 +130,32 @@ public class HelloWorld {
         }
     }
 
+    private void detectControllers() {
+        for (int glfwJoystickIndex = GLFW_JOYSTICK_1; glfwJoystickIndex < GLFW_JOYSTICK_LAST; glfwJoystickIndex++) {
+            if (glfwJoystickPresent(glfwJoystickIndex)) {
+                final boolean controllerAdded = controllers.add(glfwJoystickIndex);
+                if(controllerAdded) {
+                    controllersAdded.put(glfwJoystickIndex, controllerAdded);
+                    final String joystickName = glfwGetJoystickName(GLFW_JOYSTICK_1);
+                    assert joystickName.equals(KnownControllers._360.name);
+                    System.out.println("Added");
+                }
+            } else {
+                if (controllersAdded.getOrDefault(glfwJoystickIndex, false)) {
+                    controllers.remove(glfwJoystickIndex);
+                    controllersAdded.put(glfwJoystickIndex, false);
+                    System.out.println("Removed");
+                }
+            }
+        }
+    }
+
     public static void main(String[] args) {
         new HelloWorld().run();
+    }
+
+    private static void clearColor(RGBA color) {
+        glClearColor(color.red, color.green, color.blue, color.alpha);
     }
 
 }
