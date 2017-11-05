@@ -6,10 +6,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by Peter Colapietro on 11/23/14.
  *
  * @author Peter Colapietro
- * @since 0.1.8
+ * @since 0.1.0
  */
 public enum PS4ControllerButton {
 
