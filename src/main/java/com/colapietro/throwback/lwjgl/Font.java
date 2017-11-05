@@ -129,7 +129,7 @@ public class Font {
         this.window = window;
     }
 
-    void loopRenderText(STBTTBakedChar.Buffer cdata) {
+    void render(STBTTBakedChar.Buffer cdata) {
         float scaleFactor = 1.0f + getScale() * 0.25f;
 
 
@@ -143,7 +143,7 @@ public class Font {
 
         glPopMatrix();
 
-        glfwSwapBuffers(getWindow());
+//        glfwSwapBuffers(getWindow());
     }
 
     private void renderText(STBTTBakedChar.Buffer cdata, int BITMAP_W, int BITMAP_H) {
@@ -283,7 +283,7 @@ public class Font {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-        glClearColor(43f / 255f, 43f / 255f, 43f / 255f, 0f); // BG color
+//        glClearColor(43f / 255f, 43f / 255f, 43f / 255f, 0f); // BG color
         glColor3f(169f / 255f, 183f / 255f, 198f / 255f); // Text color
 
         glEnable(GL_TEXTURE_2D);
