@@ -43,33 +43,41 @@ abstract class FontDemo {
 
     private Callback debugProc;
 
-    protected FontDemo(int fontHeight, String filePath) {
+    protected FontDemo(int fontHeight, String t) {
         this.fontHeight = fontHeight;
         this.lineHeight = fontHeight;
 
-        String t;
-
-        int lc;
-
-        try {
-            ByteBuffer source = ioResourceToByteBuffer(filePath, 4 * 1024);
-            t = memUTF8(source).replaceAll("\t", "    "); // Replace tabs
-
-            lc = 0;
-            Matcher m = Pattern.compile("^.*$", Pattern.MULTILINE).matcher(t);
-            while (m.find()) {
-                lc++;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-
-            t = "Failed to load text.";
-            lc = 1;
-        }
-
         text = t;
-        lineCount = lc;
+        lineCount = t.split("\r\n|\r|\n").length;
     }
+
+//    protected FontDemo(int fontHeight, String filePath) {
+//        this.fontHeight = fontHeight;
+//        this.lineHeight = fontHeight;
+//
+//        String t;
+//
+//        int lc;
+//
+//        try {
+//            ByteBuffer source = ioResourceToByteBuffer(filePath, 4 * 1024);
+//            t = memUTF8(source).replaceAll("\t", "    "); // Replace tabs
+//
+//            lc = 0;
+//            Matcher m = Pattern.compile("^.*$", Pattern.MULTILINE).matcher(t);
+//            while (m.find()) {
+//                lc++;
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//
+//            t = "Failed to load text.";
+//            lc = 1;
+//        }
+//
+//        text = t;
+//        lineCount = lc;
+//    }
 
     public String getText() {
         return text;

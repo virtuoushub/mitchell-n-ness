@@ -28,8 +28,9 @@ public final class Truetype extends FontDemo {
     private final int descent;
     private final int lineGap;
 
-    private Truetype(String filePath) {
-        super(24, filePath);
+//    private Truetype(String filePath) {
+    private Truetype() {
+        super(24, "Foo");
 
         try {
             ttf = ioResourceToByteBuffer("FiraSans-Regular.ttf", 160 * 1024);
@@ -56,15 +57,7 @@ public final class Truetype extends FontDemo {
     }
 
     public static void main(String[] args) {
-        String filePath;
-        if (args.length == 0) {
-            System.out.println("Use 'ant demo -Dclass=org.lwjgl.demo.stb.Truetype -Dargs=<path>' to load a different text file (must be UTF8-encoded).\n");
-            filePath = "README.md";
-        } else {
-            filePath = args[0];
-        }
-
-        new Truetype(filePath).run("STB Truetype Demo");
+        new Truetype().run("STB Truetype Demo");
     }
 
     private STBTTBakedChar.Buffer init(int BITMAP_W, int BITMAP_H) {
