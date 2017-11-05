@@ -235,19 +235,20 @@ public class HelloWorld {
     }
 
     private void doSomething(int buttonIndex) {
-//        final Xbox360ControllerButton controllerButton = Xbox360ControllerButton.valueOf(buttonIndex);
-//        if(controllerButton.equals(Xbox360ControllerButton.A)) {
-//            clearColor(RGBA.GREEN);
-//        } else if(controllerButton.equals(Xbox360ControllerButton.B)) {
-//            clearColor(RGBA.RED);
-//        } else if(controllerButton.equals(Xbox360ControllerButton.Y)) {
-//            clearColor(RGBA.YELLOW);
-//        } else if(controllerButton.equals(Xbox360ControllerButton.X)) {
-//            clearColor(RGBA.BLUE);
-//        } else if (controllerButton.equals(Xbox360ControllerButton.BACK)) {
-//            wasBackPressed = true;
-//        }
-        System.out.println(buttonIndex);
+        final Xbox360ControllerButton controllerButton = Xbox360ControllerButton.valueOf(buttonIndex);
+        if(controllerButton.equals(Xbox360ControllerButton.A)) {
+            clearColor(RGBA.GREEN);
+        } else if(controllerButton.equals(Xbox360ControllerButton.B)) {
+            clearColor(RGBA.RED);
+        } else if(controllerButton.equals(Xbox360ControllerButton.Y)) {
+            clearColor(RGBA.YELLOW);
+        } else if(controllerButton.equals(Xbox360ControllerButton.X)) {
+            clearColor(RGBA.BLUE);
+        } else if (controllerButton.equals(Xbox360ControllerButton.BACK)) {
+            wasBackPressed = true;
+            glfwSetWindowShouldClose(window, true);
+        }
+//        System.out.println(buttonIndex);
     }
 
     public static void main(String[] args) {
