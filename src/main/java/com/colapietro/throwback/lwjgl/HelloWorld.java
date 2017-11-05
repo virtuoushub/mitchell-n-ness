@@ -184,7 +184,7 @@ public class HelloWorld {
         GL.createCapabilities();
 
 //        int texID = image.createTexture(); // causing blue color FIXME
-        STBTTBakedChar.Buffer cdata = font.init(font.BITMAP_W, font.BITMAP_H);
+        STBTTBakedChar.Buffer cdata = font.init(font.BITMAP_WIDTH, font.BITMAP_HEIGHT);
 
         glEnable(GL_TEXTURE_2D);
 
@@ -196,7 +196,6 @@ public class HelloWorld {
 
 //            image.render();
             font.render(cdata);
-            glfwSwapBuffers(window);
         }
         glDisable(GL_TEXTURE_2D);
 //        glDeleteTextures(texID);
@@ -277,6 +276,10 @@ public class HelloWorld {
         } else if (controllerButton.equals(Xbox360ControllerButton.BACK)) {
             font.setText("BYE");
             glfwSetWindowShouldClose(window, true);
+        } else if (controllerButton.equals(Xbox360ControllerButton.LEFT_BUMPER)) {
+            font.setKerningEnabled(!font.getKerningEnabled());
+        } else if (controllerButton.equals(Xbox360ControllerButton.RIGHT_BUMPER)) {
+            font.setLineBoundingBoxEnabled(!font.getLineBoundingBoxEnabled());
         }
     }
 

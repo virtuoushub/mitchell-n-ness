@@ -29,7 +29,6 @@ import static org.lwjgl.opengl.GL11.GL_UNSIGNED_BYTE;
 import static org.lwjgl.opengl.GL11.glBegin;
 import static org.lwjgl.opengl.GL11.glBindTexture;
 import static org.lwjgl.opengl.GL11.glBlendFunc;
-import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL11.glColor3f;
 import static org.lwjgl.opengl.GL11.glDisable;
 import static org.lwjgl.opengl.GL11.glEnable;
@@ -63,7 +62,7 @@ public class Font {
     final int lineCount = 1;
     private final int scale  = 0;
     private boolean kerningEnabled = true;
-    private boolean lineBBEnabled;
+    private boolean lineBoundingBoxEnabled = true;
     private String text;
     private final STBTTFontinfo info;
     private final int ascent;
@@ -73,8 +72,8 @@ public class Font {
     float lineHeight = fontHeight;
     private final ByteBuffer ttf;
     private long window;
-    int BITMAP_W = 512;
-    int BITMAP_H = 512;
+    int BITMAP_WIDTH = 512;
+    int BITMAP_HEIGHT = 512;
 
     public Font() {
         try {
@@ -117,8 +116,8 @@ public class Font {
         return kerningEnabled;
     }
 
-    public boolean isLineBBEnabled() {
-        return lineBBEnabled;
+    public boolean isLineBoundingBoxEnabled() {
+        return lineBoundingBoxEnabled;
     }
 
     public long getWindow() {
@@ -139,11 +138,11 @@ public class Font {
         // Scroll
         glTranslatef(4.0f, getFontHeight() * 0.5f + 4.0f - getLineOffset() * getFontHeight(), 0f);
 
-        renderText(cdata, BITMAP_W, BITMAP_H);
+        renderText(cdata, BITMAP_WIDTH, BITMAP_HEIGHT);
 
         glPopMatrix();
 
-//        glfwSwapBuffers(getWindow());
+        glfwSwapBuffers(getWindow());
     }
 
     private void renderText(STBTTBakedChar.Buffer cdata, int BITMAP_W, int BITMAP_H) {
@@ -164,13 +163,13 @@ public class Font {
 
             glBegin(GL_QUADS);
             while (i < to) {
-                i += getCP(text, to, i, pCodePoint);
+                i += getCodePoint(text, to, i, pCodePoint);
 
                 int cp = pCodePoint.get(0);
                 if (cp == '\n') {
-                    if (isLineBBEnabled()) {
+                    if (isLineBoundingBoxEnabled()) {
                         glEnd();
-                        renderLineBB(lineStart, i - 1, y.get(0), scale);
+                        renderLineBoundingBox(lineStart, i - 1, y.get(0), scale);
                         glBegin(GL_QUADS);
                     }
 
@@ -185,7 +184,7 @@ public class Font {
 
                 stbtt_GetBakedQuad(cdata, BITMAP_W, BITMAP_H, cp - 32, x, y, q, true);
                 if (isKerningEnabled() && i < to) {
-                    getCP(text, to, i, pCodePoint);
+                    getCodePoint(text, to, i, pCodePoint);
                     x.put(0, x.get(0) + stbtt_GetCodepointKernAdvance(info, cp, pCodePoint.get(0)) * scale);
                 }
 
@@ -202,8 +201,8 @@ public class Font {
                 glVertex2f(q.x0(), q.y1());
             }
             glEnd();
-            if (isLineBBEnabled()) {
-                renderLineBB(lineStart, text.length(), y.get(0), scale);
+            if (isLineBoundingBoxEnabled()) {
+                renderLineBoundingBox(lineStart, text.length(), y.get(0), scale);
             }
         }
     }
@@ -212,10 +211,10 @@ public class Font {
         return windowHeight;
     }
 
-    private void renderLineBB(int from, int to, float y, float scale) {
+    private void renderLineBoundingBox(int from, int to, float y, float scale) {
         glDisable(GL_TEXTURE_2D);
         glPolygonMode(GL_FRONT, GL_LINE);
-        glColor3f(1.0f, 1.0f, 0.0f);
+        glColor(RGB.RED);
 
         float width = getStringWidth(info, text, from, to, getFontHeight());
         y -= descent * scale;
@@ -229,7 +228,12 @@ public class Font {
 
         glEnable(GL_TEXTURE_2D);
         glPolygonMode(GL_FRONT, GL_FILL);
-        glColor3f(169f / 255f, 183f / 255f, 198f / 255f); // Text color
+//        glColor3f(169f / 255f, 183f / 255f, 198f / 255f); // Text color
+        glColor(RGB.WHITE);
+    }
+
+    private void glColor(RGB rgb) {
+        glColor3f(rgb.red, rgb.green, rgb.blue);
     }
 
     private float getStringWidth(STBTTFontinfo info, String text, int from, int to, int fontHeight) {
@@ -242,14 +246,14 @@ public class Font {
 
             int i = from;
             while (i < to) {
-                i += getCP(text, to, i, pCodePoint);
+                i += getCodePoint(text, to, i, pCodePoint);
                 int cp = pCodePoint.get(0);
 
                 stbtt_GetCodepointHMetrics(info, cp, pAdvancedWidth, pLeftSideBearing);
                 width += pAdvancedWidth.get(0);
 
                 if (isKerningEnabled() && i < to) {
-                    getCP(text, to, i, pCodePoint);
+                    getCodePoint(text, to, i, pCodePoint);
                     width += stbtt_GetCodepointKernAdvance(info, cp, pCodePoint.get(0));
                 }
             }
@@ -258,16 +262,16 @@ public class Font {
         return width * stbtt_ScaleForPixelHeight(info, fontHeight);
     }
 
-    private static int getCP(String text, int to, int i, IntBuffer cpOut) {
+    private static int getCodePoint(String text, int to, int i, IntBuffer codepointOut) {
         char c1 = text.charAt(i);
         if (Character.isHighSurrogate(c1) && i + 1 < to) {
             char c2 = text.charAt(i + 1);
             if (Character.isLowSurrogate(c2)) {
-                cpOut.put(0, Character.toCodePoint(c1, c2));
+                codepointOut.put(0, Character.toCodePoint(c1, c2));
                 return 2;
             }
         }
-        cpOut.put(0, c1);
+        codepointOut.put(0, c1);
         return 1;
     }
 
@@ -299,5 +303,21 @@ public class Font {
 
     public void setWindowHeight(int windowHeight) {
         this.windowHeight = windowHeight;
+    }
+
+    public void setLineBoundingBoxEnabled(boolean lineBoundingBoxEnabled) {
+        this.lineBoundingBoxEnabled = lineBoundingBoxEnabled;
+    }
+
+    public void setKerningEnabled(boolean kerningEnabled) {
+        this.kerningEnabled = kerningEnabled;
+    }
+
+    public boolean getLineBoundingBoxEnabled() {
+        return lineBoundingBoxEnabled;
+    }
+
+    public boolean getKerningEnabled() {
+        return kerningEnabled;
     }
 }
