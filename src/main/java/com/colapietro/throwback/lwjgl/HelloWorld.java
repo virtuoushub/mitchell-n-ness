@@ -38,8 +38,8 @@ public class HelloWorld {
     private Callback debugProc;
     private Font font;
     private Image image;
-    private boolean renderFont = true;
-    private boolean renderImage = !renderFont;
+    private boolean isFontRendered = true;
+    private boolean isImageRendered = !isFontRendered;
     private STBTTBakedChar.Buffer cdata;
     private int imageTextureId;
 
@@ -157,8 +157,12 @@ public class HelloWorld {
     }
 
     private void render() {
-        image.render();
-//        font.render();
+        if(isImageRendered) {
+            image.render();
+        }
+        if(isFontRendered) {
+            font.render(cdata);
+        }
     }
 
     private void updateConnectedControllers(int jid, int event) {
@@ -196,10 +200,10 @@ public class HelloWorld {
     }
 
     private void loop() {
-        if(renderImage) {
+        if(isImageRendered) {
             imageTextureId = image.createTexture(); // causing blue color FIXME
         }
-        if(renderFont) {
+        if(isFontRendered) {
             cdata = font.init(font.BITMAP_WIDTH, font.BITMAP_HEIGHT);
         }
 
@@ -210,21 +214,21 @@ public class HelloWorld {
             glfwPollEvents();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            if(renderImage) {
+            if(isImageRendered) {
                 image.render();
             }
-            if(renderFont) {
+            if(isFontRendered) {
                 font.render(cdata);
             }
             glfwSwapBuffers(getWindow());
         }
         glDisable(GL_TEXTURE_2D);
-        if(renderImage) {
+        if(isImageRendered) {
             glDeleteTextures(imageTextureId);
         }
         clearColor(RGBA.BLACK);
 
-        if(renderFont) {
+        if(isFontRendered) {
             cdata.free();
         }
     }
