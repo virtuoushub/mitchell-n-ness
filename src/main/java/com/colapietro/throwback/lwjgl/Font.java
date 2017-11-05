@@ -58,6 +58,7 @@ import static org.lwjgl.system.MemoryStack.stackPush;
  */
 public class Font {
 
+    private float windowHeight = 600.0f;
     int lineOffset;
     final int lineCount = 1;
     private final int scale  = 0;
@@ -152,7 +153,7 @@ public class Font {
             IntBuffer pCodePoint = stack.mallocInt(1);
 
             FloatBuffer x = stack.floats(0.0f);
-            FloatBuffer y = stack.floats(0.0f);
+            FloatBuffer y = stack.floats(getWindowHeight() -getFontHeight());
 
             STBTTAlignedQuad q = STBTTAlignedQuad.mallocStack(stack);
 
@@ -205,6 +206,10 @@ public class Font {
                 renderLineBB(lineStart, text.length(), y.get(0), scale);
             }
         }
+    }
+
+    private float getWindowHeight() {
+        return windowHeight;
     }
 
     private void renderLineBB(int from, int to, float y, float scale) {
@@ -290,5 +295,9 @@ public class Font {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public void setWindowHeight(int windowHeight) {
+        this.windowHeight = windowHeight;
     }
 }

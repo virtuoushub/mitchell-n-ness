@@ -4,12 +4,9 @@ package com.colapietro.throwback.lwjgl;
 import org.lwjgl.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
-import org.lwjgl.stb.STBTTAlignedQuad;
 import org.lwjgl.stb.STBTTBakedChar;
-import org.lwjgl.stb.STBTTFontinfo;
 import org.lwjgl.system.*;
 
-import java.io.IOException;
 import java.nio.*;
 import java.util.HashSet;
 import java.util.Map;
@@ -17,20 +14,12 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.colapietro.throwback.lwjgl.demo.GLFWUtil.glfwInvoke;
-import static com.colapietro.throwback.lwjgl.demo.IOUtil.ioResourceToByteBuffer;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 import static java.lang.Math.round;
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.stb.STBTruetype.stbtt_BakeFontBitmap;
-import static org.lwjgl.stb.STBTruetype.stbtt_GetBakedQuad;
-import static org.lwjgl.stb.STBTruetype.stbtt_GetCodepointHMetrics;
-import static org.lwjgl.stb.STBTruetype.stbtt_GetCodepointKernAdvance;
-import static org.lwjgl.stb.STBTruetype.stbtt_GetFontVMetrics;
-import static org.lwjgl.stb.STBTruetype.stbtt_InitFont;
-import static org.lwjgl.stb.STBTruetype.stbtt_ScaleForPixelHeight;
 import static org.lwjgl.system.MemoryStack.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
@@ -39,8 +28,8 @@ import static org.lwjgl.system.MemoryUtil.*;
  */
 public class HelloWorld {
 
-    private static int WIDTH = 800;
-    private static int HEIGHT = 600;
+    private int width = 800;
+    private int height = 600;
     private static final int NUMBER_OF_SUPPORTED_GLFW_JOYSTICKS = GLFW_JOYSTICK_LAST + 1;
 
     private long window;
@@ -82,7 +71,8 @@ public class HelloWorld {
         glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
 
         final String title = "Hello World!";
-        this.window = glfwCreateWindow(WIDTH, HEIGHT, title, NULL, NULL);
+        this.window = glfwCreateWindow(width, height, title, NULL, NULL);
+        this.font.setWindowHeight(height);
         this.font.setWindow(window);
         if ( window == NULL ) {
             throw new RuntimeException("Failed to create the GLFW window");
@@ -305,8 +295,10 @@ public class HelloWorld {
 
 
     private void windowSizeChanged(long window, int width, int height) {
-        this.WIDTH = width;
-        this.HEIGHT = height;
+        this.width = width;
+        this.height = height;
+        this.font.setWindowHeight(height);
+
 
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
@@ -317,7 +309,7 @@ public class HelloWorld {
     }
 
     private void setLineOffset(int offset) {
-        font.lineOffset = max(0, min(offset, font.lineCount - (int)(HEIGHT / font.lineHeight)));
+        font.lineOffset = max(0, min(offset, font.lineCount - (int)(height / font.lineHeight)));
     }
 
     private static void framebufferSizeChanged(long window, int width, int height) {
