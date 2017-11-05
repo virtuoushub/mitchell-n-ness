@@ -5,7 +5,7 @@
   <!-- START: The Basics -->
   <groupId>com.colapietro</groupId>
   <artifactId>mitchell-n-ness</artifactId>
-  <version>0.1.0</version>
+  <version>0.1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <!-- See: http://maven.apache.org/pom.html#Developers -->
