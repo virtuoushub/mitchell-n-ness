@@ -65,7 +65,6 @@ public class Image {
     private final int imageHeight;
     private final ByteBuffer image;
     private final int comp;
-    long window;
     private float windowWidth;
     private float windowHeight;
 
@@ -186,8 +185,6 @@ public class Image {
     }
 
     void render() {
-//        glClear(GL_COLOR_BUFFER_BIT);
-
         float scale = 0.0f;
         float scaleFactor = 1.0f + scale * 0.1f;
 
@@ -213,12 +210,6 @@ public class Image {
         glEnd();
 
         glPopMatrix();
-
-        glfwSwapBuffers(window);
-    }
-
-    public void setWindow(long window) {
-        this.window = window;
     }
 
     public void setWindowWidth(int windowWidth) {

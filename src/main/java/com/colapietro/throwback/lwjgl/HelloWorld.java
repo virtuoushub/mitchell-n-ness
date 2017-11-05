@@ -38,18 +38,35 @@ public class HelloWorld {
     private Callback debugProc;
     private Font font;
     private Image image;
+    private boolean renderFont = true;
+    private boolean renderImage = !renderFont;
+    private STBTTBakedChar.Buffer cdata;
+    private int imageTextureId;
 
     private void run() {
         System.out.println("Hello LWJGL " + Version.getVersion() + "!");
 
-        init();
-        loop();
+        try {
+            init();
+            loop();
+        } finally {
+            try {
+                destroy();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
-        // Free the window callbacks and destroy the window
+
+    }
+
+    private void destroy() {
+        if (debugProc != null) {
+            debugProc.free();
+        }
+
         glfwFreeCallbacks(window);
         glfwDestroyWindow(window);
-
-        // Terminate GLFW and free the error callback
         glfwTerminate();
         glfwSetErrorCallback(null).free();
     }
@@ -77,8 +94,6 @@ public class HelloWorld {
         final String title = "Hello World!";
         this.window = glfwCreateWindow(windowWidth, windowHeight, title, NULL, NULL);
         this.font.setWindowHeight(windowHeight);
-        this.font.setWindow(window);
-        this.image.setWindow(window);
         this.image.setWindowHeight(windowHeight);
         this.image.setWindowWidth(windowWidth);
 
@@ -86,7 +101,7 @@ public class HelloWorld {
             throw new RuntimeException("Failed to create the GLFW window");
         }
 
-//        glfwSetWindowRefreshCallback(window, window -> render());
+        glfwSetWindowRefreshCallback(window, window -> render());
         glfwSetWindowSizeCallback(window, this::windowSizeChanged);
         glfwSetFramebufferSizeCallback(window, HelloWorld::framebufferSizeChanged);
 
@@ -141,6 +156,11 @@ public class HelloWorld {
         glfwInvoke(window, this::windowSizeChanged, HelloWorld::framebufferSizeChanged);
     }
 
+    private void render() {
+        image.render();
+//        font.render();
+    }
+
     private void updateConnectedControllers(int jid, int event) {
         if (event == GLFW_CONNECTED) {
             addController(jid);
@@ -176,32 +196,37 @@ public class HelloWorld {
     }
 
     private void loop() {
-        // This line is critical for LWJGL's interoperation with GLFW's
-        // OpenGL context, or any context that is managed externally.
-        // LWJGL detects the context that is current in the current thread,
-        // creates the GLCapabilities instance and makes the OpenGL
-        // bindings available for use.
-        GL.createCapabilities();
-
-//        int texID = image.createTexture(); // causing blue color FIXME
-        STBTTBakedChar.Buffer cdata = font.init(font.BITMAP_WIDTH, font.BITMAP_HEIGHT);
+        if(renderImage) {
+            imageTextureId = image.createTexture(); // causing blue color FIXME
+        }
+        if(renderFont) {
+            cdata = font.init(font.BITMAP_WIDTH, font.BITMAP_HEIGHT);
+        }
 
         glEnable(GL_TEXTURE_2D);
 
         while ( !glfwWindowShouldClose(window) ) {
             detectControllersStates();
-//            glClear(GL_COLOR_BUFFER_BIT);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             glfwPollEvents();
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-//            image.render();
-            font.render(cdata);
+            if(renderImage) {
+                image.render();
+            }
+            if(renderFont) {
+                font.render(cdata);
+            }
+            glfwSwapBuffers(getWindow());
         }
         glDisable(GL_TEXTURE_2D);
-//        glDeleteTextures(texID);
+        if(renderImage) {
+            glDeleteTextures(imageTextureId);
+        }
         clearColor(RGBA.BLACK);
 
-        cdata.free();
+        if(renderFont) {
+            cdata.free();
+        }
     }
 
     private void detectControllersStates() {

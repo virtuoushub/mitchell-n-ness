@@ -12,7 +12,6 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 import static com.colapietro.throwback.lwjgl.demo.IOUtil.ioResourceToByteBuffer;
-import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
 import static org.lwjgl.opengl.GL11.GL_ALPHA;
 import static org.lwjgl.opengl.GL11.GL_BLEND;
 import static org.lwjgl.opengl.GL11.GL_FILL;
@@ -71,7 +70,6 @@ public class Font {
     private final int fontHeight = 24;
     float lineHeight = fontHeight;
     private final ByteBuffer ttf;
-    private long window;
     int BITMAP_WIDTH = 512;
     int BITMAP_HEIGHT = 512;
 
@@ -120,29 +118,13 @@ public class Font {
         return lineBoundingBoxEnabled;
     }
 
-    public long getWindow() {
-        return window;
-    }
-    
-    public void setWindow(long window) {
-        this.window = window;
-    }
-
     void render(STBTTBakedChar.Buffer cdata) {
         float scaleFactor = 1.0f + getScale() * 0.25f;
-
-
         glPushMatrix();
-        // Zoom
         glScalef(scaleFactor, scaleFactor, 1f);
-        // Scroll
         glTranslatef(4.0f, getFontHeight() * 0.5f + 4.0f - getLineOffset() * getFontHeight(), 0f);
-
         renderText(cdata, BITMAP_WIDTH, BITMAP_HEIGHT);
-
         glPopMatrix();
-
-        glfwSwapBuffers(getWindow());
     }
 
     private void renderText(STBTTBakedChar.Buffer cdata, int BITMAP_W, int BITMAP_H) {
