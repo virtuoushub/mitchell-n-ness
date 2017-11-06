@@ -8,7 +8,7 @@ public enum RGBA {
     GREEN(RGB.GREEN, 0.0f),
     BLUE(RGB.BLUE, 0.0f),
     WHITE(RGB.WHITE, 0.0f),
-    BLACK(RGB.BLUE, 0.0f),
+    BLACK(RGB.BLACK, 0.0f),
     YELLOW(RGB.YELLOW, 0.0f),
     PINK(RGB.PINK, 0.0f),;
 

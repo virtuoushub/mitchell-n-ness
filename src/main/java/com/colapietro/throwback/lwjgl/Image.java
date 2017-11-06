@@ -29,7 +29,6 @@ import static org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_T;
 import static org.lwjgl.opengl.GL11.GL_UNPACK_ALIGNMENT;
 import static org.lwjgl.opengl.GL11.GL_UNSIGNED_BYTE;
 import static org.lwjgl.opengl.GL11.glBegin;
-import static org.lwjgl.opengl.GL11.glBindTexture;
 import static org.lwjgl.opengl.GL11.glBlendFunc;
 import static org.lwjgl.opengl.GL11.glDisable;
 import static org.lwjgl.opengl.GL11.glEnable;
@@ -108,8 +107,7 @@ public class Image {
         }
     }
 
-    void createTexture(int[] textures) {
-        glBindTexture(GL_TEXTURE_2D, textures[0]); //FIXME
+    void createTexture() {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -214,7 +212,6 @@ public class Image {
         glPopMatrix();
     }
 
-// scale = 0.02f
     private void renderLineBoundingBox(int from, int to, float y) {
         glDisable(GL_TEXTURE_2D);
         glPolygonMode(GL_FRONT, GL_LINE);
@@ -231,8 +228,8 @@ public class Image {
 
         glEnable(GL_TEXTURE_2D);
         glPolygonMode(GL_FRONT, GL_FILL);
-//        glColor3f(169f / 255f, 183f / 255f, 198f / 255f); // Text color
         glColor(RGB.WHITE);
+
     }
 
     public void setWindowWidth(int windowWidth) {

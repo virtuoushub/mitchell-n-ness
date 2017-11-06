@@ -8,6 +8,9 @@ import org.lwjgl.stb.STBTTBakedChar;
 import org.lwjgl.system.*;
 
 import java.nio.*;
+
+import static com.colapietro.throwback.lwjgl.GLHelper.glClearColor;
+import static com.colapietro.throwback.lwjgl.GLHelper.glColor;
 import static com.colapietro.throwback.lwjgl.demo.GLFWUtil.glfwInvoke;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
@@ -37,6 +40,10 @@ public class HelloWorld {
     private STBTTBakedChar.Buffer cdata;
     private int[] textures;
     private Controllers controllers;
+
+    public static void main(String[] args) {
+        new HelloWorld().run();
+    }
 
     private void run() {
         System.out.println("Hello LWJGL " + Version.getVersion() + "!");
@@ -122,25 +129,27 @@ public class HelloWorld {
         GL.createCapabilities();
         glfwSwapInterval(1);
         glfwShowWindow(window);
-        glGenTextures(textures);
         debugProc = GLUtil.setupDebugMessageCallback();
         glfwInvoke(window, this::windowSizeChanged, HelloWorld::framebufferSizeChanged);
     }
 
     private void loop() {
+        glEnable(GL_TEXTURE_2D);
+        glGenTextures(textures);
         if(isImageRendered) {
-            image.createTexture(textures); // causing blue color FIXME
+            glBindTexture(GL_TEXTURE_2D, textures[0]);//FIXME
+            image.createTexture();
         }
         if(isFontRendered) {
-            cdata = font.init(textures);
+            glBindTexture(GL_TEXTURE_2D, textures[1]);//FIXME
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glClearColor(RGBA.BLACK);//        glClearColor(43f / 255f, 43f / 255f, 43f / 255f, 0f); // BG color
+            glColor(RGB.WHITE);//        glColor3f(169f / 255f, 183f / 255f, 198f / 255f); // Text color
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            cdata = font.init();
         }
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-//        glClearColor(43f / 255f, 43f / 255f, 43f / 255f, 0f); // BG color
-//        glColor3f(169f / 255f, 183f / 255f, 198f / 255f); // Text color
-        glEnable(GL_TEXTURE_2D);
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         while ( !glfwWindowShouldClose(window) ) {
             controllers.detectControllersStates();
             glfwPollEvents();
@@ -150,6 +159,17 @@ public class HelloWorld {
         }
         glDisable(GL_TEXTURE_2D);
 
+    }
+
+    private void render() {
+        if(isImageRendered) {
+            glBindTexture(GL_TEXTURE_2D, textures[0]);//FIXME
+            image.render();
+        }
+        if(isFontRendered) {
+            glBindTexture(GL_TEXTURE_2D, textures[1]);//FIXME
+            font.render(cdata);
+        }
     }
 
     private void destroy() {
@@ -164,19 +184,6 @@ public class HelloWorld {
         glfwDestroyWindow(window);
         glfwTerminate();
         glfwSetErrorCallback(null).free();
-    }
-
-    private void render() {
-        if(isImageRendered) {
-            image.render();
-        }
-        if(isFontRendered) {
-            font.render(cdata);
-        }
-    }
-
-    public static void main(String[] args) {
-        new HelloWorld().run();
     }
 
     private void windowSizeChanged(long window, int width, int height) {

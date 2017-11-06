@@ -14,33 +14,22 @@ import java.nio.IntBuffer;
 import static com.colapietro.throwback.lwjgl.GLHelper.glColor;
 import static com.colapietro.throwback.lwjgl.demo.IOUtil.ioResourceToByteBuffer;
 import static org.lwjgl.opengl.GL11.GL_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_BLEND;
 import static org.lwjgl.opengl.GL11.GL_FILL;
 import static org.lwjgl.opengl.GL11.GL_FRONT;
 import static org.lwjgl.opengl.GL11.GL_LINE;
-import static org.lwjgl.opengl.GL11.GL_LINEAR;
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
 import static org.lwjgl.opengl.GL11.GL_QUADS;
-import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_MAG_FILTER;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_MIN_FILTER;
 import static org.lwjgl.opengl.GL11.GL_UNSIGNED_BYTE;
 import static org.lwjgl.opengl.GL11.glBegin;
-import static org.lwjgl.opengl.GL11.glBindTexture;
-import static org.lwjgl.opengl.GL11.glBlendFunc;
-import static org.lwjgl.opengl.GL11.glColor3f;
 import static org.lwjgl.opengl.GL11.glDisable;
 import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glEnd;
-import static org.lwjgl.opengl.GL11.glGenTextures;
 import static org.lwjgl.opengl.GL11.glPolygonMode;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
 import static org.lwjgl.opengl.GL11.glScalef;
 import static org.lwjgl.opengl.GL11.glTexCoord2f;
 import static org.lwjgl.opengl.GL11.glTexImage2D;
-import static org.lwjgl.opengl.GL11.glTexParameteri;
 import static org.lwjgl.opengl.GL11.glTranslatef;
 import static org.lwjgl.opengl.GL11.glVertex2f;
 import static org.lwjgl.stb.STBTruetype.stbtt_BakeFontBitmap;
@@ -71,8 +60,8 @@ public class Font {
     private final int fontHeight = 24;
     float lineHeight = fontHeight;
     private final ByteBuffer ttf;
-    int BITMAP_WIDTH = 512;
-    int BITMAP_HEIGHT = 512;
+    private final int BITMAP_WIDTH = 512;
+    private final int BITMAP_HEIGHT = 512;
 
     public Font() {
         try {
@@ -253,11 +242,10 @@ public class Font {
         return 1;
     }
 
-    STBTTBakedChar.Buffer init(int[] textures) {
+    STBTTBakedChar.Buffer init() {
         STBTTBakedChar.Buffer cdata = STBTTBakedChar.malloc(96);
         ByteBuffer bitmap = BufferUtils.createByteBuffer(BITMAP_WIDTH * BITMAP_HEIGHT);
         stbtt_BakeFontBitmap(this.ttf, getFontHeight(), bitmap, BITMAP_WIDTH, BITMAP_HEIGHT, 32, cdata);
-        glBindTexture(GL_TEXTURE_2D, textures[1]);//FIXME
         glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, BITMAP_WIDTH, BITMAP_HEIGHT, 0, GL_ALPHA, GL_UNSIGNED_BYTE, bitmap);
         return cdata;
     }

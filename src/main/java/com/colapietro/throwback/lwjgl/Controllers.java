@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.colapietro.throwback.lwjgl.GLHelper.clearColor;
+import static com.colapietro.throwback.lwjgl.GLHelper.glClearColor;
 import static org.lwjgl.glfw.GLFW.GLFW_CONNECTED;
 import static org.lwjgl.glfw.GLFW.GLFW_DISCONNECTED;
 import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
@@ -151,16 +151,16 @@ public class Controllers {
     private void doSomething(int buttonIndex) {
         final Xbox360ControllerButton controllerButton = Xbox360ControllerButton.valueOf(buttonIndex);
         if(controllerButton.equals(Xbox360ControllerButton.A)) {
-            clearColor(RGBA.GREEN);
+            glClearColor(RGBA.GREEN);
             font.setText("GREEN");
         } else if(controllerButton.equals(Xbox360ControllerButton.B)) {
-            clearColor(RGBA.RED);
+            glClearColor(RGBA.RED);
             font.setText("RED");
         } else if(controllerButton.equals(Xbox360ControllerButton.Y)) {
-            clearColor(RGBA.YELLOW);
+            glClearColor(RGBA.YELLOW);
             font.setText("YELLOW");
         } else if(controllerButton.equals(Xbox360ControllerButton.X)) {
-            clearColor(RGBA.BLUE);
+            glClearColor(RGBA.BLUE);
             font.setText("BLUE");
         } else if (controllerButton.equals(Xbox360ControllerButton.BACK)) {
             font.setText("BYE");
