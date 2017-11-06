@@ -130,6 +130,10 @@ public class HelloWorld {
             if ( (key == GLFW_KEY_RIGHT_SHIFT || key == GLFW_KEY_E)) { //&& (action == GLFW_PRESS || action == GLFW_REPEAT)) {
                 image.angle += rotationSpeed;
             }
+            if ( (key == GLFW_KEY_LEFT_SUPER) && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
+                font.setLineBoundingBoxEnabled(!font.getLineBoundingBoxEnabled());
+                image.lineBoundingBoxEnabled = !image.lineBoundingBoxEnabled;
+            }
         });
 
         // Get the thread stack and push a new frame
