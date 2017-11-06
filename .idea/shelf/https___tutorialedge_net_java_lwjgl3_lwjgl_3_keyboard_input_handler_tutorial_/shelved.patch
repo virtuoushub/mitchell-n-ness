@@ -1,0 +1,39 @@
+Index: src/main/java/com/colapietro/throwback/lwjgl/input/package-info.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/java/com/colapietro/throwback/lwjgl/input/package-info.java	(revision )
++++ src/main/java/com/colapietro/throwback/lwjgl/input/package-info.java	(revision )
+@@ -0,0 +1,4 @@
++/**
++ * @author Peter Colapietro.
++ */
++package com.colapietro.throwback.lwjgl.input;
+\ No newline at end of file
+Index: src/main/java/com/colapietro/throwback/lwjgl/input/GamepadHandler.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/java/com/colapietro/throwback/lwjgl/input/GamepadHandler.java	(revision )
++++ src/main/java/com/colapietro/throwback/lwjgl/input/GamepadHandler.java	(revision )
+@@ -0,0 +1,18 @@
++package com.colapietro.throwback.lwjgl.input;
++
++import org.lwjgl.glfw.GLFWJoystickCallback;
++
++import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
++
++/**
++ * @author Peter Colapietro.
++ */
++public class GamepadHandler extends GLFWJoystickCallback {
++    public static boolean[] keys = new boolean[65536];
++
++
++    @Override
++    public void invoke(int jid, int event) {
++        keys[jid] = event != GLFW_RELEASE;
++    }
++}
