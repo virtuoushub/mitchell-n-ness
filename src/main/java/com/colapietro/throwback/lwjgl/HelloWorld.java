@@ -8,12 +8,6 @@ import org.lwjgl.stb.STBTTBakedChar;
 import org.lwjgl.system.*;
 
 import java.nio.*;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-
-import static com.colapietro.throwback.lwjgl.GLHelper.clearColor;
 import static com.colapietro.throwback.lwjgl.demo.GLFWUtil.glfwInvoke;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
@@ -26,6 +20,8 @@ import static org.lwjgl.system.MemoryUtil.*;
 
 /**
  * @author Peter Colapietro.
+ *
+ * <a href="https://stackoverflow.com/q/2225737">ERROR: JDWP Unable to get JNI 1.2 environment</a>
  */
 public class HelloWorld {
 
@@ -63,10 +59,10 @@ public class HelloWorld {
         textures = new int[2];
         image = new Image("images/lwjgl32.png");
         font = new Font();
-        GLFWErrorCallback.createPrint(System.err).set();
         if ( !glfwInit() ) {
             throw new IllegalStateException("Unable to initialize GLFW");
         }
+        GLFWErrorCallback.createPrint(System.err).set();
 
         glfwSetErrorCallback((error, description) -> {
             System.out.println("error " + error);
@@ -83,6 +79,7 @@ public class HelloWorld {
         final String title = "Hello World!";
         window = glfwCreateWindow(windowWidth, windowHeight, title, NULL, NULL);
         controllers = new Controllers(window, font);
+        controllers.initControllers();
         font.setWindowHeight(windowHeight);
         image.setWindowHeight(windowHeight);
         image.setWindowWidth(windowWidth);
@@ -120,18 +117,13 @@ public class HelloWorld {
                     (vidmode.width() - pWidth.get(0)) / 2,
                     (vidmode.height() - pHeight.get(0)) / 2
             );
-        } // the stack frame is popped automatically
-
-        // Make the OpenGL context current
+        }
         glfwMakeContextCurrent(window);
         GL.createCapabilities();
-        debugProc = GLUtil.setupDebugMessageCallback();
-
         glfwSwapInterval(1);
         glfwShowWindow(window);
-
-        controllers.initControllers();
-
+        glGenTextures(textures);
+        debugProc = GLUtil.setupDebugMessageCallback();
         glfwInvoke(window, this::windowSizeChanged, HelloWorld::framebufferSizeChanged);
     }
 
@@ -142,9 +134,13 @@ public class HelloWorld {
         if(isFontRendered) {
             cdata = font.init(textures);
         }
-
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+//        glClearColor(43f / 255f, 43f / 255f, 43f / 255f, 0f); // BG color
+//        glColor3f(169f / 255f, 183f / 255f, 198f / 255f); // Text color
         glEnable(GL_TEXTURE_2D);
-
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         while ( !glfwWindowShouldClose(window) ) {
             controllers.detectControllersStates();
             glfwPollEvents();
@@ -152,6 +148,8 @@ public class HelloWorld {
             render();
             glfwSwapBuffers(getWindow());
         }
+        glDisable(GL_TEXTURE_2D);
+
     }
 
     private void destroy() {

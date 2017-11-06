@@ -259,22 +259,10 @@ public class Font {
 
     STBTTBakedChar.Buffer init(int[] textures) {
         STBTTBakedChar.Buffer cdata = STBTTBakedChar.malloc(96);
-
         ByteBuffer bitmap = BufferUtils.createByteBuffer(BITMAP_WIDTH * BITMAP_HEIGHT);
         stbtt_BakeFontBitmap(this.ttf, getFontHeight(), bitmap, BITMAP_WIDTH, BITMAP_HEIGHT, 32, cdata);
-
         glBindTexture(GL_TEXTURE_2D, textures[1]);//FIXME
         glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, BITMAP_WIDTH, BITMAP_HEIGHT, 0, GL_ALPHA, GL_UNSIGNED_BYTE, bitmap);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-//        glClearColor(43f / 255f, 43f / 255f, 43f / 255f, 0f); // BG color
-//        glColor3f(169f / 255f, 183f / 255f, 198f / 255f); // Text color
-
-        glEnable(GL_TEXTURE_2D);
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
         return cdata;
     }
 
