@@ -40,7 +40,7 @@ public class HelloWorld {
     private STBTTBakedChar.Buffer cdata;
     private int[] textures;
     private Controllers controllers;
-    static boolean boundingBoxesEnabled = false;
+    static boolean boundingBoxesEnabled = true;
 
     //FIXME
     private final float angleScalar = 2.0f;
