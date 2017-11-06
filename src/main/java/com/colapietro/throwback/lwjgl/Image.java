@@ -15,6 +15,7 @@ import static org.lwjgl.opengl.GL11.GL_FRONT;
 import static org.lwjgl.opengl.GL11.GL_LINE;
 import static org.lwjgl.opengl.GL11.GL_LINEAR;
 import static org.lwjgl.opengl.GL11.GL_LINEAR_MIPMAP_LINEAR;
+import static org.lwjgl.opengl.GL11.GL_NEAREST;
 import static org.lwjgl.opengl.GL11.GL_ONE;
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
 import static org.lwjgl.opengl.GL11.GL_QUADS;
@@ -192,6 +193,7 @@ public class Image {
 
         glPushMatrix();
         glTranslatef(windowWidth * 0.5f, windowHeight * 0.5f, 0.0f);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glScalef(scaleFactor, scaleFactor, 1f);
         if(wrapAroundEnabled) {
             wrapAround();

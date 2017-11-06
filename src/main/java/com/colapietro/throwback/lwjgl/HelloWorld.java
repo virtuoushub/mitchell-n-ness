@@ -65,7 +65,7 @@ public class HelloWorld {
 
     private void init() {
         textures = new int[2];
-        image = new Image("images/MortMort Retro.png");
+        image = new Image("images/idle.png");
         font = new Font();
         if ( !glfwInit() ) {
             throw new IllegalStateException("Unable to initialize GLFW");
