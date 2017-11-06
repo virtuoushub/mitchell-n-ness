@@ -152,21 +152,16 @@ public class HelloWorld {
             render();
             glfwSwapBuffers(getWindow());
         }
-        glDisable(GL_TEXTURE_2D);
-        if(isImageRendered) {
-            glDeleteTextures(textures[0]);
-        }
-
-        if(isFontRendered) {
-            cdata.free();
-        }
     }
 
     private void destroy() {
+        glDeleteTextures(textures);
+        if(isFontRendered) {
+            cdata.free();
+        }
         if (debugProc != null) {
             debugProc.free();
         }
-
         glfwFreeCallbacks(window);
         glfwDestroyWindow(window);
         glfwTerminate();
@@ -187,6 +182,7 @@ public class HelloWorld {
     }
 
     private void windowSizeChanged(long window, int width, int height) {
+        this.window = window;
         this.windowWidth = width;
         this.windowHeight = height;
         this.font.setWindowHeight(height);
