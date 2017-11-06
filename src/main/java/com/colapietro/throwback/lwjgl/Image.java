@@ -75,7 +75,8 @@ public class Image {
     float y = 0;
     float x = 0;
     private boolean wrapAroundEnabled = true;
-
+    float scale = 40.0f;
+    float scaleFactor = 1.0f + scale * 0.1f;
 
     Image(String imagePath) {
         ByteBuffer imageBuffer;
@@ -188,9 +189,6 @@ public class Image {
     }
 
     void render() {
-        float scale = 0.0f;
-        float scaleFactor = 1.0f + scale * 0.1f;
-
         glPushMatrix();
         glTranslatef(windowWidth * 0.5f, windowHeight * 0.5f, 0.0f);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -257,12 +255,21 @@ public class Image {
     }
 
     private float wrapAroundAxis(float axis, float axisMax) {
-        if(axis > axisMax/2) {
-            axis = -axisMax/2;
-        } else if (axis < -axisMax/2) {
-            axis = axisMax/2;
+        float scaledAxis;
+        if(scaleFactor > 0 || scaleFactor < 0) { //FIXME
+            scaledAxis = axis * scaleFactor;
+        } else {
+            scaledAxis = axis;
         }
-        return axis;
+        float scaledHalfMax = axisMax / 2.0f;
+        if(scaledAxis > scaledHalfMax) {
+            scaledAxis = -scaledHalfMax / scaleFactor;
+        } else if (scaledAxis < -scaledHalfMax) {
+            scaledAxis = scaledHalfMax / scaleFactor;
+        } else {
+            scaledAxis = axis;
+        }
+        return scaledAxis;
     }
 
 }
