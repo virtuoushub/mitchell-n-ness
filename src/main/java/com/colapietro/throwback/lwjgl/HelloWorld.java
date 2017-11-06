@@ -42,6 +42,12 @@ public class HelloWorld {
     private Controllers controllers;
     static boolean boundingBoxesEnabled = false;
 
+    //FIXME
+    private final float angleScalar = 2.0f;
+    private final float movementScalar = angleScalar;
+    private final float movementSpeed = movementScalar * 1.0f;
+    private final float rotationSpeed = angleScalar * 1.0f;
+
     public static void main(String[] args) {
         new HelloWorld().run();
     }
@@ -105,6 +111,24 @@ public class HelloWorld {
         glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
             if ( key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE ) {
                 glfwSetWindowShouldClose(window, true); // We will detect this in the rendering loop
+            }
+            if ( (key == GLFW_KEY_LEFT || key == GLFW_KEY_A)) { //&& (action == GLFW_PRESS || action == GLFW_REPEAT)) {
+                image.x -= movementSpeed;
+            }
+            if ( (key == GLFW_KEY_RIGHT || key == GLFW_KEY_D)) { //&& (action == GLFW_PRESS || action == GLFW_REPEAT)) {
+                image.x += movementSpeed;
+            }
+            if ( (key == GLFW_KEY_UP || key == GLFW_KEY_W)) { //&& (action == GLFW_PRESS || action == GLFW_REPEAT)) {
+                image.y -= movementSpeed;
+            }
+            if ( (key == GLFW_KEY_DOWN || key == GLFW_KEY_S)) { //&& (action == GLFW_PRESS || action == GLFW_REPEAT)) {
+                image.y += movementSpeed;
+            }
+            if ( (key == GLFW_KEY_LEFT_SHIFT || key == GLFW_KEY_Q)) { //&& (action == GLFW_PRESS || action == GLFW_REPEAT)) {
+                image.angle -= rotationSpeed;
+            }
+            if ( (key == GLFW_KEY_RIGHT_SHIFT || key == GLFW_KEY_E)) { //&& (action == GLFW_PRESS || action == GLFW_REPEAT)) {
+                image.angle += rotationSpeed;
             }
         });
 
