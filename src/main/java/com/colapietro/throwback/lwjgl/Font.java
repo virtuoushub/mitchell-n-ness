@@ -11,6 +11,7 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
+import static com.colapietro.throwback.lwjgl.GLHelper.glColor;
 import static com.colapietro.throwback.lwjgl.demo.IOUtil.ioResourceToByteBuffer;
 import static org.lwjgl.opengl.GL11.GL_ALPHA;
 import static org.lwjgl.opengl.GL11.GL_BLEND;
@@ -210,12 +211,7 @@ public class Font {
 
         glEnable(GL_TEXTURE_2D);
         glPolygonMode(GL_FRONT, GL_FILL);
-//        glColor3f(169f / 255f, 183f / 255f, 198f / 255f); // Text color
-        glColor(RGB.WHITE);
-    }
-
-    private void glColor(RGB rgb) {
-        glColor3f(rgb.red, rgb.green, rgb.blue);
+        glColor(RGB.WHITE);//        glColor3f(169f / 255f, 183f / 255f, 198f / 255f); // Text color
     }
 
     private float getStringWidth(STBTTFontinfo info, String text, int from, int to, int fontHeight) {
@@ -289,4 +285,5 @@ public class Font {
     public boolean getKerningEnabled() {
         return kerningEnabled;
     }
+
 }

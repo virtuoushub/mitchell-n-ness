@@ -6,9 +6,14 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
+import static com.colapietro.throwback.lwjgl.GLHelper.glColor;
 import static com.colapietro.throwback.lwjgl.demo.IOUtil.ioResourceToByteBuffer;
+import static java.awt.SystemColor.info;
 import static java.lang.Math.round;
 import static org.lwjgl.opengl.GL11.GL_BLEND;
+import static org.lwjgl.opengl.GL11.GL_FILL;
+import static org.lwjgl.opengl.GL11.GL_FRONT;
+import static org.lwjgl.opengl.GL11.GL_LINE;
 import static org.lwjgl.opengl.GL11.GL_LINEAR;
 import static org.lwjgl.opengl.GL11.GL_LINEAR_MIPMAP_LINEAR;
 import static org.lwjgl.opengl.GL11.GL_ONE;
@@ -26,10 +31,11 @@ import static org.lwjgl.opengl.GL11.GL_UNSIGNED_BYTE;
 import static org.lwjgl.opengl.GL11.glBegin;
 import static org.lwjgl.opengl.GL11.glBindTexture;
 import static org.lwjgl.opengl.GL11.glBlendFunc;
+import static org.lwjgl.opengl.GL11.glDisable;
 import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glEnd;
-import static org.lwjgl.opengl.GL11.glGenTextures;
 import static org.lwjgl.opengl.GL11.glPixelStorei;
+import static org.lwjgl.opengl.GL11.glPolygonMode;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
 import static org.lwjgl.opengl.GL11.glScalef;
@@ -202,7 +208,31 @@ public class Image {
         }
         glEnd();
 
+        renderLineBoundingBox(0, imageWidth, imageHeight);
+
+
         glPopMatrix();
+    }
+
+// scale = 0.02f
+    private void renderLineBoundingBox(int from, int to, float y) {
+        glDisable(GL_TEXTURE_2D);
+        glPolygonMode(GL_FRONT, GL_LINE);
+        glColor(RGB.RED);
+
+        float width = imageWidth;
+
+        glBegin(GL_QUADS);
+        glVertex2f(0.0f, y);
+        glVertex2f(width, y);
+        glVertex2f(width, y - imageHeight);
+        glVertex2f(0.0f, y - imageHeight);
+        glEnd();
+
+        glEnable(GL_TEXTURE_2D);
+        glPolygonMode(GL_FRONT, GL_FILL);
+//        glColor3f(169f / 255f, 183f / 255f, 198f / 255f); // Text color
+        glColor(RGB.WHITE);
     }
 
     public void setWindowWidth(int windowWidth) {

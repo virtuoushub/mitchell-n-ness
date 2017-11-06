@@ -33,7 +33,7 @@ public class HelloWorld {
     private Font font;
     private Image image;
     private boolean isFontRendered = true;
-    private boolean isImageRendered = !isFontRendered;
+    private boolean isImageRendered = isFontRendered;
     private STBTTBakedChar.Buffer cdata;
     private int[] textures;
     private Controllers controllers;
