@@ -145,12 +145,11 @@ public class HelloWorld {
             glBindTexture(GL_TEXTURE_2D, textures[1]);//FIXME
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glClearColor(RGBA.BLACK);//        glClearColor(43f / 255f, 43f / 255f, 43f / 255f, 0f); // BG color
-            glColor(RGB.WHITE);//        glColor3f(169f / 255f, 183f / 255f, 198f / 255f); // Text color
             glEnable(GL_BLEND);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             cdata = font.init();
         }
+        glClearColor(RGBA.WHITE);//        glClearColor(43f / 255f, 43f / 255f, 43f / 255f, 0f); // BG color
         while ( !glfwWindowShouldClose(window) ) {
             controllers.detectControllersStates();
             glfwPollEvents();
@@ -169,6 +168,7 @@ public class HelloWorld {
         }
         if(isFontRendered) {
             glBindTexture(GL_TEXTURE_2D, textures[1]);//FIXME
+            glColor(RGB.BLACK);//        glColor3f(169f / 255f, 183f / 255f, 198f / 255f); // Text color
             font.render(cdata);
         }
     }
