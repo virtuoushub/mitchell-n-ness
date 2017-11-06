@@ -73,6 +73,7 @@ public class Image {
     int angle = 0;
     float y = 0;
     float x = 0;
+    private boolean wrapAroundEnabled = true;
 
 
     Image(String imagePath) {
@@ -192,6 +193,9 @@ public class Image {
         glPushMatrix();
         glTranslatef(windowWidth * 0.5f, windowHeight * 0.5f, 0.0f);
         glScalef(scaleFactor, scaleFactor, 1f);
+        if(wrapAroundEnabled) {
+            wrapAround();
+        }
         glTranslatef(x, y, 0.0f);
         glRotatef(angle,0,0,1);
         glTranslatef(-imageWidth * 0.5f, -imageHeight * 0.5f, 0.0f);
@@ -247,4 +251,19 @@ public class Image {
     public void setWindowHeight(int windowHeight) {
         this.windowHeight = windowHeight;
     }
+
+    private void wrapAround() {
+        x = wrapAroundAxis(x, windowWidth);
+        y = wrapAroundAxis(y, windowHeight);
+    }
+
+    private float wrapAroundAxis(float axis, float axisMax) {
+        if(axis > axisMax/2) {
+            axis = -axisMax/2;
+        } else if (axis < -axisMax/2) {
+            axis = axisMax/2;
+        }
+        return axis;
+    }
+
 }
