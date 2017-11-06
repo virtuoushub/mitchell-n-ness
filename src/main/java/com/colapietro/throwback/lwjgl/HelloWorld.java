@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static com.colapietro.throwback.lwjgl.GLHelper.clearColor;
 import static com.colapietro.throwback.lwjgl.demo.GLFWUtil.glfwInvoke;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
@@ -30,18 +31,16 @@ public class HelloWorld {
 
     private int windowWidth = 800;
     private int windowHeight = 600;
-    private static final int NUMBER_OF_SUPPORTED_GLFW_JOYSTICKS = GLFW_JOYSTICK_LAST + 1;
-
     private long window;
-    private Set<Integer> controllers;
-    private Map<Integer, Boolean> controllersAdded;
+
     private Callback debugProc;
     private Font font;
     private Image image;
     private boolean isFontRendered = true;
     private boolean isImageRendered = !isFontRendered;
     private STBTTBakedChar.Buffer cdata;
-    private int imageTextureId;
+    private int[] textures;
+    private Controllers controllers;
 
     private void run() {
         System.out.println("Hello LWJGL " + Version.getVersion() + "!");
@@ -60,18 +59,8 @@ public class HelloWorld {
 
     }
 
-    private void destroy() {
-        if (debugProc != null) {
-            debugProc.free();
-        }
-
-        glfwFreeCallbacks(window);
-        glfwDestroyWindow(window);
-        glfwTerminate();
-        glfwSetErrorCallback(null).free();
-    }
-
     private void init() {
+        textures = new int[2];
         image = new Image("images/lwjgl32.png");
         font = new Font();
         GLFWErrorCallback.createPrint(System.err).set();
@@ -92,10 +81,11 @@ public class HelloWorld {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 
         final String title = "Hello World!";
-        this.window = glfwCreateWindow(windowWidth, windowHeight, title, NULL, NULL);
-        this.font.setWindowHeight(windowHeight);
-        this.image.setWindowHeight(windowHeight);
-        this.image.setWindowWidth(windowWidth);
+        window = glfwCreateWindow(windowWidth, windowHeight, title, NULL, NULL);
+        controllers = new Controllers(window, font);
+        font.setWindowHeight(windowHeight);
+        image.setWindowHeight(windowHeight);
+        image.setWindowWidth(windowWidth);
 
         if ( window == NULL ) {
             throw new RuntimeException("Failed to create the GLFW window");
@@ -140,20 +130,47 @@ public class HelloWorld {
         glfwSwapInterval(1);
         glfwShowWindow(window);
 
-        //
-        final String string = "030000004c050000c405000000010000,PS4 Controller,a:b1,b:b2,back:b8,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b12,leftshoulder:b4,leftstick:b10,lefttrigger:a3,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b11,righttrigger:a4,rightx:a2,righty:a5,start:b9,x:b0,y:b3,platform:Mac OS X,";
-        assert glfwUpdateGamepadMappings(string);
-        assert NUMBER_OF_SUPPORTED_GLFW_JOYSTICKS == 16;
-        controllers = new HashSet<>(NUMBER_OF_SUPPORTED_GLFW_JOYSTICKS);
-        controllersAdded = new ConcurrentHashMap<>(NUMBER_OF_SUPPORTED_GLFW_JOYSTICKS);
-        for (int jid = GLFW_JOYSTICK_1; jid < GLFW_JOYSTICK_LAST; jid++) {
-            if(glfwJoystickPresent(jid)) {
-                updateConnectedControllers(jid, GLFW_CONNECTED);
-            }
-        }
-        glfwSetJoystickCallback(this::updateConnectedControllers);
+        controllers.initControllers();
 
         glfwInvoke(window, this::windowSizeChanged, HelloWorld::framebufferSizeChanged);
+    }
+
+    private void loop() {
+        if(isImageRendered) {
+            image.createTexture(textures); // causing blue color FIXME
+        }
+        if(isFontRendered) {
+            cdata = font.init(textures);
+        }
+
+        glEnable(GL_TEXTURE_2D);
+
+        while ( !glfwWindowShouldClose(window) ) {
+            controllers.detectControllersStates();
+            glfwPollEvents();
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            render();
+            glfwSwapBuffers(getWindow());
+        }
+        glDisable(GL_TEXTURE_2D);
+        if(isImageRendered) {
+            glDeleteTextures(textures[0]);
+        }
+
+        if(isFontRendered) {
+            cdata.free();
+        }
+    }
+
+    private void destroy() {
+        if (debugProc != null) {
+            debugProc.free();
+        }
+
+        glfwFreeCallbacks(window);
+        glfwDestroyWindow(window);
+        glfwTerminate();
+        glfwSetErrorCallback(null).free();
     }
 
     private void render() {
@@ -165,175 +182,9 @@ public class HelloWorld {
         }
     }
 
-    private void updateConnectedControllers(int jid, int event) {
-        if (event == GLFW_CONNECTED) {
-            addController(jid);
-            final boolean isGamepad = glfwJoystickIsGamepad(jid);
-            final String joystickGUID = glfwGetJoystickGUID(jid);
-            final String joystickName = glfwGetJoystickName(jid);
-            final String s = joystickGUID + ' ' + isGamepad + ' ' + joystickName;
-            System.out.println(s);
-        } else if (event == GLFW_DISCONNECTED) {
-            removeController(jid);
-        }
-        font.setText(controllers.size() + " controllers connected");
-    }
-
-    private void addController(int jid) {
-        final boolean controllerAdded = controllers.add(jid);
-        if (controllerAdded) {
-            controllersAdded.put(jid, controllerAdded);
-            final String joystickName = glfwGetJoystickName(GLFW_JOYSTICK_1);
-//            testing ps4 controller
-//            assert joystickName.equals(Controller.XBOX_360.name);
-//            assert joystickName.equals(Xbox360ControllerButton.controller.name);
-            System.out.println("Added");
-        }
-    }
-
-    private void removeController(int jid) {
-        if (controllersAdded.getOrDefault(jid, false)) {
-            controllers.remove(jid);
-            controllersAdded.put(jid, false);
-            System.out.println("Removed");
-        }
-    }
-
-    private void loop() {
-        if(isImageRendered) {
-            imageTextureId = image.createTexture(); // causing blue color FIXME
-        }
-        if(isFontRendered) {
-            cdata = font.init(font.BITMAP_WIDTH, font.BITMAP_HEIGHT);
-        }
-
-        glEnable(GL_TEXTURE_2D);
-
-        while ( !glfwWindowShouldClose(window) ) {
-            detectControllersStates();
-            glfwPollEvents();
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-            if(isImageRendered) {
-                image.render();
-            }
-            if(isFontRendered) {
-                font.render(cdata);
-            }
-            glfwSwapBuffers(getWindow());
-        }
-        glDisable(GL_TEXTURE_2D);
-        if(isImageRendered) {
-            glDeleteTextures(imageTextureId);
-        }
-        clearColor(RGBA.BLACK);
-
-        if(isFontRendered) {
-            cdata.free();
-        }
-    }
-
-    private void detectControllersStates() {
-        for(int glfwJoystickIndex : controllers) {
-            dectectControllerState(glfwJoystickIndex);
-        }
-    }
-
-    private void dectectControllerState(int jid) {
-//        if(glfwGetJoystickGUID(jid).equals("030000005e0400008e02000000000000")) {
-            final ByteBuffer joystickButtons = glfwGetJoystickButtons(jid);
-//            assert joystickButtons.limit() == Controller.XBOX_360.buttonLimit;
-//            assert joystickButtons.limit() == Controller.PS4.buttonLimit;
-            while (joystickButtons.hasRemaining()) {
-                final int buttonIndex = joystickButtons.position();
-                final byte buttonState = joystickButtons.get();
-                if (buttonState == GLFW_PRESS) {
-                    doSomething(buttonIndex);
-                }
-            }
-            final FloatBuffer joystickAxes = glfwGetJoystickAxes(jid);
-            assert joystickAxes.limit() == 6;
-            while (joystickAxes.hasRemaining()) {
-                final int axisPosition = joystickAxes.position();
-                final float axisState = joystickAxes.get();
-
-            }
-//                final Xbox360ControllerAxis controllerAxis = Xbox360ControllerAxis.valueOf(axisPosition);
-//                final boolean isAxisLeftTrigger = controllerAxis.equals(Xbox360ControllerAxis.LEFT_TRIGGER);
-//                final boolean isAxisRightTrigger = controllerAxis.equals(Xbox360ControllerAxis.RIGHT_TRIGGER);
-//                final boolean isAxisTrigger = isAxisLeftTrigger || isAxisRightTrigger;
-//                if (isAxisTrigger) {
-//                    if (Float.compare(axisState, 1.0f) == 0) {
-//                        System.out.println(controllerAxis + " fully pressed");
-//                    }
-//                } else {
-//                    final boolean isAxisLeftX = controllerAxis.equals(Xbox360ControllerAxis.LEFT_X);
-//                    final boolean isAxisLeftY = controllerAxis.equals(Xbox360ControllerAxis.LEFT_Y);
-//                    final boolean isAxisLeft = isAxisLeftX || isAxisLeftY;
-////                        final boolean isAxisRightX = controllerAxis.equals(Xbox360ControllerAxis.RIGHT_X);
-////                        final boolean isAxisRightY = controllerAxis.equals(Xbox360ControllerAxis.RIGHT_Y);
-////                        final boolean isAxisRight = isAxisRightX || isAxisRightY;
-//                    final boolean isAsixPastHalfway = axisState > 0.5f || axisState < -0.5f;
-//                    if (isAxisLeft) {
-//                        if (isAsixPastHalfway) {
-//                            System.out.println("left stick moved"); // PS4
-//                        }
-//                    } else {
-//                        if (isAsixPastHalfway) {
-//                            System.out.println("right stick moved"); //PS4?
-//                        }
-//                    }
-//                }
-//            }
-//        }
-    }
-
-    private void doSomething(int buttonIndex) {
-        final Xbox360ControllerButton controllerButton = Xbox360ControllerButton.valueOf(buttonIndex);
-        if(controllerButton.equals(Xbox360ControllerButton.A)) {
-            clearColor(RGBA.GREEN);
-            font.setText("GREEN");
-        } else if(controllerButton.equals(Xbox360ControllerButton.B)) {
-            clearColor(RGBA.RED);
-            font.setText("RED");
-        } else if(controllerButton.equals(Xbox360ControllerButton.Y)) {
-            clearColor(RGBA.YELLOW);
-            font.setText("YELLOW");
-        } else if(controllerButton.equals(Xbox360ControllerButton.X)) {
-            clearColor(RGBA.BLUE);
-            font.setText("BLUE");
-        } else if (controllerButton.equals(Xbox360ControllerButton.BACK)) {
-            font.setText("BYE");
-            glfwSetWindowShouldClose(window, true);
-        } else if (controllerButton.equals(Xbox360ControllerButton.LEFT_BUMPER)) {
-            font.setKerningEnabled(!font.getKerningEnabled());
-        } else if (controllerButton.equals(Xbox360ControllerButton.RIGHT_BUMPER)) {
-            font.setLineBoundingBoxEnabled(!font.getLineBoundingBoxEnabled());
-        }
-    }
-
     public static void main(String[] args) {
         new HelloWorld().run();
     }
-
-    private static void clearColor(RGBA color) {
-        glClearColor(color.red, color.green, color.blue, color.alpha);
-    }
-
-//    private void foo() {
-        // ...
-//        Configuration.DISABLE_CHECKS.set(true);
-//        final String fileName = "pc_game_controller_db.txt"; //"gamecontrollerdb.txt";
-//         try (final InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(fileName)) {
-//            final byte[] byteArray = IOUtils.toByteArray(inputStream);
-//            final ByteBuffer byteBuffer0 = ByteBuffer.wrap(byteArray);
-//            glfwUpdateGamepadMappings(byteBuffer0);
-//            final String string = IOUtils.toString(inputStream, StandardCharsets.US_ASCII);
-//         } catch (IOException e) {
-//             e.printStackTrace();
-//         } finally {}
-//    }
-
 
     private void windowSizeChanged(long window, int width, int height) {
         this.windowWidth = width;

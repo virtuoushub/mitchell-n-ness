@@ -105,10 +105,10 @@ public class Image {
         }
     }
 
-    int createTexture() {
-        int texID = glGenTextures();
+    void createTexture(int[] textures) {
+        glGenTextures(textures);
 
-        glBindTexture(GL_TEXTURE_2D, texID);
+        glBindTexture(GL_TEXTURE_2D, textures[0]); //FIXME
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -166,8 +166,6 @@ public class Image {
         } else {
             memFree(input_pixels);
         }
-
-        return texID;
     }
     
     private void premultiplyAlpha() {

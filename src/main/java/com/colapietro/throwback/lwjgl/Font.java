@@ -257,20 +257,19 @@ public class Font {
         return 1;
     }
 
-    STBTTBakedChar.Buffer init(int BITMAP_W, int BITMAP_H) {
-        int                   texID = glGenTextures();
+    STBTTBakedChar.Buffer init(int[] textures) {
         STBTTBakedChar.Buffer cdata = STBTTBakedChar.malloc(96);
 
-        ByteBuffer bitmap = BufferUtils.createByteBuffer(BITMAP_W * BITMAP_H);
-        stbtt_BakeFontBitmap(this.ttf, getFontHeight(), bitmap, BITMAP_W, BITMAP_H, 32, cdata);
+        ByteBuffer bitmap = BufferUtils.createByteBuffer(BITMAP_WIDTH * BITMAP_HEIGHT);
+        stbtt_BakeFontBitmap(this.ttf, getFontHeight(), bitmap, BITMAP_WIDTH, BITMAP_HEIGHT, 32, cdata);
 
-        glBindTexture(GL_TEXTURE_2D, texID);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, BITMAP_W, BITMAP_H, 0, GL_ALPHA, GL_UNSIGNED_BYTE, bitmap);
+        glBindTexture(GL_TEXTURE_2D, textures[1]);//FIXME
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, BITMAP_WIDTH, BITMAP_HEIGHT, 0, GL_ALPHA, GL_UNSIGNED_BYTE, bitmap);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
 //        glClearColor(43f / 255f, 43f / 255f, 43f / 255f, 0f); // BG color
-        glColor3f(169f / 255f, 183f / 255f, 198f / 255f); // Text color
+//        glColor3f(169f / 255f, 183f / 255f, 198f / 255f); // Text color
 
         glEnable(GL_TEXTURE_2D);
         glEnable(GL_BLEND);
