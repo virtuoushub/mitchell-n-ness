@@ -149,7 +149,7 @@ public class Controllers {
                         if(isAxisLeftTrigger) {
                             image.angle -= rotationSpeed;
                         } else {
-                            image.angle += angleScalar * 1;
+                            image.angle += rotationSpeed;
                         }
                     }
                 } else {
