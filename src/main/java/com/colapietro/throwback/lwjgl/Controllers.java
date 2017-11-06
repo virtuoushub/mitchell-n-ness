@@ -13,6 +13,7 @@ import static org.lwjgl.glfw.GLFW.GLFW_DISCONNECTED;
 import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_1;
 import static org.lwjgl.glfw.GLFW.GLFW_JOYSTICK_LAST;
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
+import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 import static org.lwjgl.glfw.GLFW.glfwGetJoystickAxes;
 import static org.lwjgl.glfw.GLFW.glfwGetJoystickButtons;
 import static org.lwjgl.glfw.GLFW.glfwGetJoystickGUID;
@@ -40,6 +41,8 @@ public class Controllers {
     private final float movementScalar = angleScalar;
     private final float movementSpeed = movementScalar * 1.0f;
     private final float rotationSpeed = angleScalar * 1.0f;
+    private final Map<Integer, Integer> previousState = new ConcurrentHashMap<>(Controller.XBOX_360.buttonLimit); //FIXME
+
 
     public Controllers(long window, Font font, Image image) {
         this.window = window;
@@ -112,10 +115,24 @@ public class Controllers {
 //            assert joystickButtons.limit() == Controller.PS4.buttonLimit;
         while (joystickButtons.hasRemaining()) {
             final int buttonIndex = joystickButtons.position();
-            final byte buttonState = joystickButtons.get();
-            if (buttonState == GLFW_PRESS) {
+            final int buttonState = joystickButtons.get();
+            if (buttonState == GLFW_RELEASE) {
+                if (previousState.getOrDefault(buttonIndex, GLFW_RELEASE) == GLFW_PRESS) {
                 doSomething(buttonIndex);
+                } else {
+                    final Xbox360ControllerButton controllerButton = Xbox360ControllerButton.valueOf(buttonIndex);
+                    if (controllerButton.equals(Xbox360ControllerButton.DPAD_LEFT)) {
+                        image.x += movementSpeed;
+                    } else if (controllerButton.equals(Xbox360ControllerButton.DPAD_RIGHT)) {
+                        image.x -= movementSpeed;
+                    } else if (controllerButton.equals(Xbox360ControllerButton.DPAD_UP)) {
+                        image.y += movementSpeed;
+                    } else if (controllerButton.equals(Xbox360ControllerButton.DPAD_DOWN)) {
+                        image.y -= movementSpeed;
+                    }
+                }
             }
+            previousState.put(buttonIndex, buttonState);
         }
         final FloatBuffer joystickAxes = glfwGetJoystickAxes(jid);
         assert joystickAxes.limit() == 6;
@@ -178,14 +195,6 @@ public class Controllers {
         } else if (controllerButton.equals(Xbox360ControllerButton.RIGHT_BUMPER)) {
             font.setLineBoundingBoxEnabled(!font.getLineBoundingBoxEnabled());
             image.lineBoundingBoxEnabled = !image.lineBoundingBoxEnabled;
-        } else if (controllerButton.equals(Xbox360ControllerButton.DPAD_LEFT)) {
-            image.x -= movementSpeed;
-        } else if (controllerButton.equals(Xbox360ControllerButton.DPAD_RIGHT)) {
-            image.x += movementSpeed;
-        } else if (controllerButton.equals(Xbox360ControllerButton.DPAD_UP)) {
-            image.y -= movementSpeed;
-        } else if (controllerButton.equals(Xbox360ControllerButton.DPAD_DOWN)) {
-            image.y += movementSpeed;
         }
     }
 
