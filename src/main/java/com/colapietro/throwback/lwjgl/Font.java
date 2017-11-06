@@ -133,6 +133,8 @@ public class Font {
             int i  = 0;
             int to = text.length();
 
+            glColor(RGB.BLACK);//        glColor3f(169f / 255f, 183f / 255f, 198f / 255f); // Text color
+
             glBegin(GL_QUADS);
             while (i < to) {
                 i += getCodePoint(text, to, i, pCodePoint);

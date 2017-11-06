@@ -192,7 +192,6 @@ public class HelloWorld {
         }
         if(isFontRendered) {
             glBindTexture(GL_TEXTURE_2D, textures[1]);//FIXME
-            glColor(RGB.BLACK);//        glColor3f(169f / 255f, 183f / 255f, 198f / 255f); // Text color
             font.render(cdata);
         }
     }

@@ -201,8 +201,7 @@ public class Image {
         glTranslatef(x, y, 0.0f);
         glRotatef(angle,0,0,1);
         glTranslatef(-imageWidth * 0.5f, -imageHeight * 0.5f, 0.0f);
-
-
+        glColor(RGB.WHITE);
         glBegin(GL_QUADS);
         {
             glTexCoord2f(0.0f, 0.0f);
@@ -222,7 +221,6 @@ public class Image {
         if (lineBoundingBoxEnabled) {
             renderLineBoundingBox(imageHeight);
         }
-
         glPopMatrix();
     }
 
@@ -243,7 +241,6 @@ public class Image {
         glEnable(GL_TEXTURE_2D);
         glPolygonMode(GL_FRONT, GL_FILL);
         glColor(RGB.WHITE);
-
     }
 
     public void setWindowWidth(int windowWidth) {
