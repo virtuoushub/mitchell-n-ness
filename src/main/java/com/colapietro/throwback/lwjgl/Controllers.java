@@ -35,10 +35,16 @@ public class Controllers {
     private Map<Integer, Boolean> controllersAdded;
     private final long window;
     private final Font font;
+    private final Image image;
+    private final float angleScalar = 2.0f;
+    private final float movementScalar = angleScalar;
+    private final float movementSpeed = movementScalar * 1.0f;
+    private final float rotationSpeed = angleScalar * 1.0f;
 
-    public Controllers(long window, Font font) {
+    public Controllers(long window, Font font, Image image) {
         this.window = window;
         this.font = font;
+        this.image = image;
     }
 
     void initControllers() {
@@ -116,36 +122,38 @@ public class Controllers {
         while (joystickAxes.hasRemaining()) {
             final int axisPosition = joystickAxes.position();
             final float axisState = joystickAxes.get();
-
-        }
-//                final Xbox360ControllerAxis controllerAxis = Xbox360ControllerAxis.valueOf(axisPosition);
-//                final boolean isAxisLeftTrigger = controllerAxis.equals(Xbox360ControllerAxis.LEFT_TRIGGER);
-//                final boolean isAxisRightTrigger = controllerAxis.equals(Xbox360ControllerAxis.RIGHT_TRIGGER);
-//                final boolean isAxisTrigger = isAxisLeftTrigger || isAxisRightTrigger;
-//                if (isAxisTrigger) {
-//                    if (Float.compare(axisState, 1.0f) == 0) {
-//                        System.out.println(controllerAxis + " fully pressed");
-//                    }
-//                } else {
-//                    final boolean isAxisLeftX = controllerAxis.equals(Xbox360ControllerAxis.LEFT_X);
-//                    final boolean isAxisLeftY = controllerAxis.equals(Xbox360ControllerAxis.LEFT_Y);
-//                    final boolean isAxisLeft = isAxisLeftX || isAxisLeftY;
-////                        final boolean isAxisRightX = controllerAxis.equals(Xbox360ControllerAxis.RIGHT_X);
-////                        final boolean isAxisRightY = controllerAxis.equals(Xbox360ControllerAxis.RIGHT_Y);
-////                        final boolean isAxisRight = isAxisRightX || isAxisRightY;
-//                    final boolean isAsixPastHalfway = axisState > 0.5f || axisState < -0.5f;
-//                    if (isAxisLeft) {
-//                        if (isAsixPastHalfway) {
-//                            System.out.println("left stick moved"); // PS4
-//                        }
-//                    } else {
-//                        if (isAsixPastHalfway) {
-//                            System.out.println("right stick moved"); //PS4?
-//                        }
-//                    }
-//                }
-//            }
-//        }
+                final Xbox360ControllerAxis controllerAxis = Xbox360ControllerAxis.valueOf(axisPosition);
+                final boolean isAxisLeftTrigger = controllerAxis.equals(Xbox360ControllerAxis.LEFT_TRIGGER);
+                final boolean isAxisRightTrigger = controllerAxis.equals(Xbox360ControllerAxis.RIGHT_TRIGGER);
+                final boolean isAxisTrigger = isAxisLeftTrigger || isAxisRightTrigger;
+                if (isAxisTrigger) {
+                    if (Float.compare(axisState, 1.0f) == 0) {
+                        System.out.println(controllerAxis + " fully pressed");
+                        if(isAxisLeftTrigger) {
+                            image.angle -= rotationSpeed;
+                        } else {
+                            image.angle += angleScalar * 1;
+                        }
+                    }
+                } else {
+                    final boolean isAxisLeftX = controllerAxis.equals(Xbox360ControllerAxis.LEFT_X);
+                    final boolean isAxisLeftY = controllerAxis.equals(Xbox360ControllerAxis.LEFT_Y);
+                    final boolean isAxisLeft = isAxisLeftX || isAxisLeftY;
+//                        final boolean isAxisRightX = controllerAxis.equals(Xbox360ControllerAxis.RIGHT_X);
+//                        final boolean isAxisRightY = controllerAxis.equals(Xbox360ControllerAxis.RIGHT_Y);
+//                        final boolean isAxisRight = isAxisRightX || isAxisRightY;
+                    final boolean isAsixPastHalfway = axisState > 0.5f || axisState < -0.5f;
+                    if (isAxisLeft) {
+                        if (isAsixPastHalfway) {
+                            System.out.println("left stick moved"); // PS4
+                        }
+                    } else {
+                        if (isAsixPastHalfway) {
+                            System.out.println("right stick moved"); //PS4?
+                        }
+                    }
+                }
+            }
     }
 
     private void doSomething(int buttonIndex) {
@@ -169,6 +177,15 @@ public class Controllers {
             font.setKerningEnabled(!font.getKerningEnabled());
         } else if (controllerButton.equals(Xbox360ControllerButton.RIGHT_BUMPER)) {
             font.setLineBoundingBoxEnabled(!font.getLineBoundingBoxEnabled());
+            image.lineBoundingBoxEnabled = !image.lineBoundingBoxEnabled;
+        } else if (controllerButton.equals(Xbox360ControllerButton.DPAD_LEFT)) {
+            image.x -= movementSpeed;
+        } else if (controllerButton.equals(Xbox360ControllerButton.DPAD_RIGHT)) {
+            image.x += movementSpeed;
+        } else if (controllerButton.equals(Xbox360ControllerButton.DPAD_UP)) {
+            image.y -= movementSpeed;
+        } else if (controllerButton.equals(Xbox360ControllerButton.DPAD_DOWN)) {
+            image.y += movementSpeed;
         }
     }
 

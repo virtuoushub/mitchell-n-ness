@@ -40,6 +40,7 @@ public class HelloWorld {
     private STBTTBakedChar.Buffer cdata;
     private int[] textures;
     private Controllers controllers;
+    static boolean boundingBoxesEnabled = false;
 
     public static void main(String[] args) {
         new HelloWorld().run();
@@ -64,7 +65,7 @@ public class HelloWorld {
 
     private void init() {
         textures = new int[2];
-        image = new Image("images/lwjgl32.png");
+        image = new Image("images/MortMort Retro.png");
         font = new Font();
         if ( !glfwInit() ) {
             throw new IllegalStateException("Unable to initialize GLFW");
@@ -85,11 +86,11 @@ public class HelloWorld {
 
         final String title = "Hello World!";
         window = glfwCreateWindow(windowWidth, windowHeight, title, NULL, NULL);
-        controllers = new Controllers(window, font);
-        controllers.initControllers();
         font.setWindowHeight(windowHeight);
         image.setWindowHeight(windowHeight);
         image.setWindowWidth(windowWidth);
+        controllers = new Controllers(window, font, image);
+        controllers.initControllers();
 
         if ( window == NULL ) {
             throw new RuntimeException("Failed to create the GLFW window");

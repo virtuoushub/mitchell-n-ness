@@ -8,7 +8,6 @@ import java.nio.IntBuffer;
 
 import static com.colapietro.throwback.lwjgl.GLHelper.glColor;
 import static com.colapietro.throwback.lwjgl.demo.IOUtil.ioResourceToByteBuffer;
-import static java.awt.SystemColor.info;
 import static java.lang.Math.round;
 import static org.lwjgl.opengl.GL11.GL_BLEND;
 import static org.lwjgl.opengl.GL11.GL_FILL;
@@ -37,6 +36,7 @@ import static org.lwjgl.opengl.GL11.glPixelStorei;
 import static org.lwjgl.opengl.GL11.glPolygonMode;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
+import static org.lwjgl.opengl.GL11.glRotatef;
 import static org.lwjgl.opengl.GL11.glScalef;
 import static org.lwjgl.opengl.GL11.glTexCoord2f;
 import static org.lwjgl.opengl.GL11.glTexImage2D;
@@ -64,11 +64,15 @@ import static org.lwjgl.system.MemoryUtil.memFree;
  */
 public class Image {
     private final int imageWidth;
-    private final int imageHeight;
+    final int imageHeight;
     private final ByteBuffer image;
     private final int comp;
     private float windowWidth;
     private float windowHeight;
+    boolean lineBoundingBoxEnabled = HelloWorld.boundingBoxesEnabled; // FIXME
+    int angle = 0;
+    float y = 0;
+    float x = 0;
 
 
     Image(String imagePath) {
@@ -188,7 +192,10 @@ public class Image {
         glPushMatrix();
         glTranslatef(windowWidth * 0.5f, windowHeight * 0.5f, 0.0f);
         glScalef(scaleFactor, scaleFactor, 1f);
+        glTranslatef(x, y, 0.0f);
+        glRotatef(angle,0,0,1);
         glTranslatef(-imageWidth * 0.5f, -imageHeight * 0.5f, 0.0f);
+
 
         glBegin(GL_QUADS);
         {
@@ -206,13 +213,14 @@ public class Image {
         }
         glEnd();
 
-        renderLineBoundingBox(0, imageWidth, imageHeight);
-
+        if (lineBoundingBoxEnabled) {
+            renderLineBoundingBox(imageHeight);
+        }
 
         glPopMatrix();
     }
 
-    private void renderLineBoundingBox(int from, int to, float y) {
+    private void renderLineBoundingBox(float y) {
         glDisable(GL_TEXTURE_2D);
         glPolygonMode(GL_FRONT, GL_LINE);
         glColor(RGB.RED);

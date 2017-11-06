@@ -51,7 +51,7 @@ public class Font {
     final int lineCount = 1;
     private final int scale  = 0;
     private boolean kerningEnabled = true;
-    private boolean lineBoundingBoxEnabled = true;
+    private boolean lineBoundingBoxEnabled = HelloWorld.boundingBoxesEnabled; // FIXME;
     private String text;
     private final STBTTFontinfo info;
     private final int ascent;
