@@ -32,7 +32,7 @@ public class HelloWorld {
     private int windowHeight = 600;
     private long window;
 
-    private Callback debugProc;
+    private Callback debugProcess;
     private Font font;
     private Image image;
     private boolean isFontRendered = true;
@@ -129,7 +129,7 @@ public class HelloWorld {
         GL.createCapabilities();
         glfwSwapInterval(1);
         glfwShowWindow(window);
-        debugProc = GLUtil.setupDebugMessageCallback();
+        debugProcess = GLUtil.setupDebugMessageCallback();
         glfwInvoke(window, this::windowSizeChanged, HelloWorld::framebufferSizeChanged);
     }
 
@@ -177,8 +177,8 @@ public class HelloWorld {
         if(isFontRendered) {
             cdata.free();
         }
-        if (debugProc != null) {
-            debugProc.free();
+        if (debugProcess != null) {
+            debugProcess.free();
         }
         glfwFreeCallbacks(window);
         glfwDestroyWindow(window);
