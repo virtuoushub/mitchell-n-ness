@@ -10,7 +10,6 @@ import org.lwjgl.system.*;
 import java.nio.*;
 
 import static com.colapietro.throwback.lwjgl.GLHelper.glClearColor;
-import static com.colapietro.throwback.lwjgl.GLHelper.glColor;
 import static com.colapietro.throwback.lwjgl.demo.GLFWUtil.glfwInvoke;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
@@ -130,7 +129,7 @@ public class HelloWorld {
             if ( (key == GLFW_KEY_RIGHT_SHIFT || key == GLFW_KEY_E)) { //&& (action == GLFW_PRESS || action == GLFW_REPEAT)) {
                 image.angle += rotationSpeed;
             }
-            if ( (key == GLFW_KEY_LEFT_SUPER) && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
+            if ( (key == GLFW_KEY_LEFT_SUPER || key == GLFW_KEY_RIGHT_SUPER) && (action == GLFW_PRESS) && (mods == GLFW_MOD_SUPER)) {
                 font.setLineBoundingBoxEnabled(!font.getLineBoundingBoxEnabled());
                 image.lineBoundingBoxEnabled = !image.lineBoundingBoxEnabled;
             }

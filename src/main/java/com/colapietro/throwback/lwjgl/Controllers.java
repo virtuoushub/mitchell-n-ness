@@ -145,7 +145,7 @@ public class Controllers {
                 final boolean isAxisTrigger = isAxisLeftTrigger || isAxisRightTrigger;
                 if (isAxisTrigger) {
                     if (Float.compare(axisState, 1.0f) == 0) {
-                        System.out.println(controllerAxis + " fully pressed");
+//                        System.out.println(controllerAxis + " fully pressed");
                         if(isAxisLeftTrigger) {
                             image.angle -= rotationSpeed;
                         } else {
@@ -190,9 +190,8 @@ public class Controllers {
         } else if (controllerButton.equals(Xbox360ControllerButton.BACK)) {
             font.setText("BYE");
             glfwSetWindowShouldClose(window, true);
-        } else if (controllerButton.equals(Xbox360ControllerButton.LEFT_BUMPER)) {
-            font.setKerningEnabled(!font.getKerningEnabled());
-        } else if (controllerButton.equals(Xbox360ControllerButton.RIGHT_BUMPER)) {
+        } else if (controllerButton.equals(Xbox360ControllerButton.LEFT_BUMPER) ||
+                controllerButton.equals(Xbox360ControllerButton.RIGHT_BUMPER)) {
             font.setLineBoundingBoxEnabled(!font.getLineBoundingBoxEnabled());
             image.lineBoundingBoxEnabled = !image.lineBoundingBoxEnabled;
         }
