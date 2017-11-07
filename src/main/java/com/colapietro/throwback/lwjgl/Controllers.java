@@ -1,7 +1,11 @@
 package com.colapietro.throwback.lwjgl;
 
+import org.lwjgl.glfw.GLFWVidMode;
+import org.lwjgl.system.MemoryStack;
+
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -21,11 +25,17 @@ import static org.lwjgl.glfw.GLFW.glfwGetJoystickName;
 import static org.lwjgl.glfw.GLFW.glfwGetPrimaryMonitor;
 import static org.lwjgl.glfw.GLFW.glfwGetVideoMode;
 import static org.lwjgl.glfw.GLFW.glfwGetWindowMonitor;
+import static org.lwjgl.glfw.GLFW.glfwGetWindowPos;
+import static org.lwjgl.glfw.GLFW.glfwGetWindowSize;
 import static org.lwjgl.glfw.GLFW.glfwJoystickIsGamepad;
 import static org.lwjgl.glfw.GLFW.glfwJoystickPresent;
 import static org.lwjgl.glfw.GLFW.glfwSetJoystickCallback;
+import static org.lwjgl.glfw.GLFW.glfwSetWindowMonitor;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
+import static org.lwjgl.glfw.GLFW.glfwSwapInterval;
 import static org.lwjgl.glfw.GLFW.glfwUpdateGamepadMappings;
+import static org.lwjgl.system.MemoryStack.stackPush;
+import static org.lwjgl.system.MemoryUtil.NULL;
 
 /**
  * @author Peter Colapietro.
@@ -45,6 +55,12 @@ public class Controllers {
     private final float movementSpeed = movementScalar * 1.0f;
     private final float rotationSpeed = angleScalar * 1.0f;
     private final Map<Integer, Integer> previousState = new ConcurrentHashMap<>(Controller.XBOX_360.buttonLimit); //FIXME
+    private boolean fullscreen = false; // FIXME
+    int xpos; // FIXME
+    int ypos; // FIXME
+    int width = 800; // FIXME
+    int height = 600; // FIXME
+
 
 
     public Controllers(long window, Font font, Image image) {
@@ -200,20 +216,29 @@ public class Controllers {
             font.setLineBoundingBoxEnabled(!font.getLineBoundingBoxEnabled());
             image.lineBoundingBoxEnabled = !image.lineBoundingBoxEnabled;
         } else if (controllerButton.equals(Xbox360ControllerButton.GUIDE)) {
-            // Toggle fullscreen flag.
-//            fullscreen = !fullscreen;
-            if (glfwGetWindowMonitor(window) != 0) {
-//                glfwSetWindowMonitor(window, null,
-//                        windowed_xpos, windowed_ypos,
-//                        , windowed_height, 0);
-            } else {
+            fullscreen = !fullscreen;
+            if(fullscreen) {
                 long monitor = glfwGetPrimaryMonitor();
-                System.out.println(monitor);
-                if (monitor != 0) {
-                    glfwGetVideoMode(monitor);
-//                    glfwGetWindowPos(window, , );
-//                    glfwGetWindowSize(window, &windowed_width, &windowed_height);
-//                    glfwSetWindowMonitor(window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+                GLFWVidMode vidmode = glfwGetVideoMode(monitor);
+                if (glfwGetWindowMonitor(window) == NULL) {
+                    try (MemoryStack s = stackPush()) {
+                        IntBuffer a = s.ints(0);
+                        IntBuffer b = s.ints(0);
+
+                        glfwGetWindowPos(window, a, b);
+                        xpos = a.get(0);
+                        ypos = b.get(0);
+
+                        glfwGetWindowSize(window, a, b);
+                        width = a.get(0);
+                        height = b.get(0);
+                    }
+                    glfwSetWindowMonitor(window, monitor, 0, 0, vidmode.width(), vidmode.height(), vidmode.refreshRate());
+                    glfwSwapInterval(1);
+                }
+            } else {
+                if (glfwGetWindowMonitor(window) != NULL) {
+                    glfwSetWindowMonitor(window, NULL, xpos, ypos, width, height, 0);
                 }
             }
         }
