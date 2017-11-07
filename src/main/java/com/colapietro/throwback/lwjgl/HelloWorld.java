@@ -39,13 +39,19 @@ public class HelloWorld {
     private STBTTBakedChar.Buffer cdata;
     private int[] textures;
     private Controllers controllers;
-    static boolean boundingBoxesEnabled = true;
+    static boolean boundingBoxesEnabled = !true;
 
     //FIXME
     private final float angleScalar = 2.0f;
     private final float movementScalar = angleScalar;
     private final float movementSpeed = movementScalar * 1.0f;
     private final float rotationSpeed = angleScalar * 1.0f;
+    private boolean fullscreen = false;
+
+    int xpos;
+    int ypos;
+    int width = windowWidth;
+    int height = windowHeight;
 
     public static void main(String[] args) {
         new HelloWorld().run();
@@ -133,6 +139,9 @@ public class HelloWorld {
                 font.setLineBoundingBoxEnabled(!font.getLineBoundingBoxEnabled());
                 image.lineBoundingBoxEnabled = !image.lineBoundingBoxEnabled;
             }
+            if ( (key == GLFW_KEY_F) && (action == GLFW_PRESS)) {
+                toggleFullscren(window);
+            }
         });
 
         // Get the thread stack and push a new frame
@@ -159,6 +168,34 @@ public class HelloWorld {
         glfwShowWindow(window);
         debugProcess = GLUtil.setupDebugMessageCallback();
         glfwInvoke(window, this::windowSizeChanged, HelloWorld::framebufferSizeChanged);
+    }
+
+    private void toggleFullscren(long window) {
+        fullscreen = !fullscreen;
+        if(fullscreen) {
+            long monitor = glfwGetPrimaryMonitor();
+            GLFWVidMode vidmode = glfwGetVideoMode(monitor);
+            if (glfwGetWindowMonitor(window) == NULL) {
+                try (MemoryStack s = stackPush()) {
+                    IntBuffer a = s.ints(0);
+                    IntBuffer b = s.ints(0);
+
+                    glfwGetWindowPos(window, a, b);
+                    xpos = a.get(0);
+                    ypos = b.get(0);
+
+                    glfwGetWindowSize(window, a, b);
+                    width = a.get(0);
+                    height = b.get(0);
+                }
+                glfwSetWindowMonitor(window, monitor, 0, 0, vidmode.width(), vidmode.height(), vidmode.refreshRate());
+                glfwSwapInterval(1);
+            }
+        } else {
+            if (glfwGetWindowMonitor(window) != NULL) {
+                glfwSetWindowMonitor(window, NULL, xpos, ypos, width, height, 0);
+            }
+        }
     }
 
     private void loop() {
@@ -200,17 +237,22 @@ public class HelloWorld {
     }
 
     private void destroy() {
-        glDeleteTextures(textures);
-        if(isFontRendered) {
+        if(isFontRendered && cdata != null) {
             cdata.free();
         }
         if (debugProcess != null) {
             debugProcess.free();
         }
-        glfwFreeCallbacks(window);
-        glfwDestroyWindow(window);
-        glfwTerminate();
-        glfwSetErrorCallback(null).free();
+        try {
+            GL.getCapabilities();
+            glDeleteTextures(textures);
+            glfwFreeCallbacks(window);
+            glfwDestroyWindow(window);
+            glfwTerminate();
+            glfwSetErrorCallback(null).free();
+        } catch (IllegalStateException e) {
+            System.out.println(e);
+        }
     }
 
     private void windowSizeChanged(long window, int width, int height) {
@@ -218,6 +260,8 @@ public class HelloWorld {
         this.windowWidth = width;
         this.windowHeight = height;
         this.font.setWindowHeight(height);
+        this.image.setWindowHeight(height);
+        this.image.setWindowWidth(width);
 
 
         glMatrixMode(GL_PROJECTION);
