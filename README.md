@@ -1,9 +1,32 @@
 # mitchell-n-ness
+## run
+### as maven exec task
+```mvnw exec:exec```
+
+### as fat jar
+1 ```mvnw clean package```
+
+2.windows.nix
+  - ```java -jar ./target/mitchell-n-ness-0.1.0-SNAPSHOT-jar-with-dependencies.jar```
+
+2.macos
+  - ```java -XstartOnFirstThread -jar ./target/mitchell-n-ness-0.1.0-SNAPSHOT-jar-with-dependencies.jar```
 
 ## useful resources
 * https://github.com/virtuoushub/awesome-gamedev
 * https://github.com/virtuoushub/fuzzy-octo-shame
 * https://github.com/whoa-algebraic/game-off-2016
+* https://www.piskelapp.com/
+* https://www.bfxr.net/
+* http://drpetter.se/project_sfxr.html
+
+## Tested Controllers
+GUID | Controller Name
+--- | ---
+030000004c050000c405000000010000 | PS4 Controller
+030000005e0400008e02000000000000 | X360 Controller
+030000005e040000d102000000000000 | Xbox One Wired Controller
+*(why is 030000005e0400008e02000000000000 not 03000000c6240000045d000000000000,Xbox 360 Wired Controller?)*
 
 ### game jam boilerplate
 From https://itch.io/jam/game-off-2017
@@ -24,3 +47,9 @@ From https://itch.io/jam/game-off-2017
 <p>The <a href="https://itch.io/jam/game-off-2017/community">itch.io community feature</a> is enabled for this jam—that’s a great place to ask questions specific to the Game Off, share tips, etc.</p>
 <p>And don’t be shy—share your progress! The official Twitter hashtag for the Game Off is&nbsp;<a href="https://twitter.com/hashtag/githubgameoff?f=tweets" rel="nofollow noopener"><code>#GitHubGameOff</code></a>.<br></p>
 <p><br></p></div>
+
+### research
+#### fullscreen
+- https://github.com/LWJGL/lwjgl3/blob/master/modules/core/src/test/java/org/lwjgl/demo/glfw/Gears.java#L131-L148
+- https://github.com/LWJGL/lwjgl3/blob/master/modules/core/src/test/java/org/lwjgl/demo/glfw/Gears.java#L161-L164
+- https://github.com/glfw/glfw/blob/3.2.1/examples/boing.c#L238-L266
