@@ -2,6 +2,7 @@ package com.colapietro.throwback.lwjgl;
 
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.system.MemoryStack;
+import org.slf4j.*;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
@@ -42,7 +43,7 @@ import static org.lwjgl.system.MemoryUtil.NULL;
  */
 public class Controllers {
 
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(Image.class);
 
     private static final int NUMBER_OF_SUPPORTED_GLFW_JOYSTICKS = GLFW_JOYSTICK_LAST + 1;
     private Set<Integer> controllers;
@@ -96,7 +97,7 @@ public class Controllers {
             final String joystickGUID = glfwGetJoystickGUID(jid);
             final String joystickName = glfwGetJoystickName(jid);
             final String s = joystickGUID + ' ' + isGamepad + ' ' + joystickName;
-            System.out.println(s);
+            LOGGER.debug(s);
         } else if (event == GLFW_DISCONNECTED) {
             removeController(jid);
         }
@@ -111,7 +112,7 @@ public class Controllers {
 //            testing ps4 controller
 //            assert joystickName.equals(Controller.XBOX_360.name);
 //            assert joystickName.equals(Xbox360ControllerButton.controller.name);
-            System.out.println("Added");
+            LOGGER.debug("Added");
         }
     }
 
@@ -119,7 +120,7 @@ public class Controllers {
         if (controllersAdded.getOrDefault(jid, false)) {
             controllers.remove(jid);
             controllersAdded.put(jid, false);
-            System.out.println("Removed");
+            LOGGER.debug("Removed");
         }
     }
 
@@ -166,7 +167,7 @@ public class Controllers {
                 final boolean isAxisTrigger = isAxisLeftTrigger || isAxisRightTrigger;
                 if (isAxisTrigger) {
                     if (Float.compare(axisState, 1.0f) == 0) {
-//                        System.out.println(controllerAxis + " fully pressed");
+//                        LOGGER.debug(controllerAxis + " fully pressed");
                         if(isAxisLeftTrigger) {
                             image.angle -= rotationSpeed;
                         } else {
@@ -183,11 +184,11 @@ public class Controllers {
                     final boolean isAsixPastHalfway = axisState > 0.5f || axisState < -0.5f;
                     if (isAxisLeft) {
                         if (isAsixPastHalfway) {
-                            System.out.println("left stick moved"); // PS4
+                            LOGGER.debug("left stick moved"); // PS4
                         }
                     } else {
                         if (isAsixPastHalfway) {
-                            System.out.println("right stick moved"); //PS4?
+                            LOGGER.debug("right stick moved"); //PS4?
                         }
                     }
                 }
