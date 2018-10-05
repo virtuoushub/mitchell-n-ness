@@ -6,6 +6,7 @@ import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.stb.STBTTBakedChar;
 import org.lwjgl.system.*;
+import org.slf4j.*;
 
 import java.nio.*;
 
@@ -26,6 +27,8 @@ import static org.lwjgl.system.MemoryUtil.*;
  * <a href="https://stackoverflow.com/q/2225737">ERROR: JDWP Unable to get JNI 1.2 environment</a>
  */
 public class HelloWorld {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(Image.class);
 
     private int windowWidth = 800;
     private int windowHeight = 600;
@@ -58,7 +61,7 @@ public class HelloWorld {
     }
 
     private void run() {
-        System.out.println("Hello LWJGL " + Version.getVersion() + "!");
+        LOGGER.debug("Hello LWJGL " + Version.getVersion() + "!");
 
         try {
             init();
@@ -84,8 +87,8 @@ public class HelloWorld {
         GLFWErrorCallback.createPrint(System.err).set();
 
         glfwSetErrorCallback((error, description) -> {
-            System.out.println("error " + error);
-            System.out.println("description " + GLFWErrorCallback.getDescription(description));
+            LOGGER.error("error " + error);
+            LOGGER.error("description " + GLFWErrorCallback.getDescription(description));
         });
 
         glfwDefaultWindowHints(); // optional, the current window hints are already the default
@@ -251,7 +254,7 @@ public class HelloWorld {
             glfwTerminate();
             glfwSetErrorCallback(null).free();
         } catch (IllegalStateException e) {
-            System.out.println(e);
+            LOGGER.error("{}", e);
         }
     }
 

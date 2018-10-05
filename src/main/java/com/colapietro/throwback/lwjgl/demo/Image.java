@@ -9,6 +9,7 @@ import java.io.IOException;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
+import org.slf4j.*;
 
 import java.nio.*;
 
@@ -26,6 +27,8 @@ import static org.lwjgl.system.MemoryUtil.*;
 
 /** STB Image demo. */
 public final class Image {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(Image.class);
 
     private final ByteBuffer image;
 
@@ -62,10 +65,10 @@ public final class Image {
                 throw new RuntimeException("Failed to read image information: " + stbi_failure_reason());
             }
 
-            System.out.println("Image width: " + w.get(0));
-            System.out.println("Image height: " + h.get(0));
-            System.out.println("Image components: " + comp.get(0));
-            System.out.println("Image HDR: " + stbi_is_hdr_from_memory(imageBuffer));
+            LOGGER.debug("Image width: " + w.get(0));
+            LOGGER.debug("Image height: " + h.get(0));
+            LOGGER.debug("Image components: " + comp.get(0));
+            LOGGER.debug("Image HDR: " + stbi_is_hdr_from_memory(imageBuffer));
 
             // Decode the image
             image = stbi_load_from_memory(imageBuffer, w, h, comp, 0);
@@ -82,7 +85,7 @@ public final class Image {
     public static void main(String[] args) {
         String imagePath;
         if (args.length == 0) {
-            System.out.println("Use 'ant demo -Dclass=org.lwjgl.demo.stb.Image -Dargs=<path>' to load a different image.\n");
+            LOGGER.debug("Use 'ant demo -Dclass=org.lwjgl.demo.stb.Image -Dargs=<path>' to load a different image.\n");
             imagePath = "images/lwjgl32.png";
         } else {
             imagePath = args[0];

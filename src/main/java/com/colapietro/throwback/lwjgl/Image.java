@@ -1,6 +1,7 @@
 package com.colapietro.throwback.lwjgl;
 
 import org.lwjgl.system.MemoryStack;
+import org.slf4j.*;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -64,6 +65,7 @@ import static org.lwjgl.system.MemoryUtil.memFree;
  * @author Peter Colapietro.
  */
 public class Image {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Image.class);
     private final int imageWidth;
     final int imageHeight;
     private final ByteBuffer image;
@@ -97,10 +99,10 @@ public class Image {
                 throw new RuntimeException("Failed to read image information: " + stbi_failure_reason());
             }
 
-            System.out.println("Image width: " + imageWidth.get(0));
-            System.out.println("Image height: " + imageHeight.get(0));
-            System.out.println("Image components: " + comp.get(0));
-            System.out.println("Image HDR: " + stbi_is_hdr_from_memory(imageBuffer));
+            LOGGER.debug("Image width: " + imageWidth.get(0));
+            LOGGER.debug("Image height: " + imageHeight.get(0));
+            LOGGER.debug("Image components: " + comp.get(0));
+            LOGGER.debug("Image HDR: " + stbi_is_hdr_from_memory(imageBuffer));
 
             // Decode the image
             image = stbi_load_from_memory(imageBuffer, imageWidth, imageHeight, comp, 0);
