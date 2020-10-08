@@ -7,6 +7,7 @@ import org.slf4j.*;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -85,9 +86,9 @@ public class Controllers {
 
     private void updatePS4ControllerGamepadMapping() {
         final String ps4ControllerGamepadMapping = "030000004c050000c405000000010000,PS4 Controller,a:b1,b:b2,back:b8,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b12,leftshoulder:b4,leftstick:b10,lefttrigger:a3,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b11,righttrigger:a4,rightx:a2,righty:a5,start:b9,x:b0,y:b3,platform:Mac OS X,";
-        assert glfwUpdateGamepadMappings(ps4ControllerGamepadMapping);
+        assert glfwUpdateGamepadMappings(ByteBuffer.wrap(ps4ControllerGamepadMapping.getBytes(StandardCharsets.UTF_8)));
         final String xboxOneControllerGamepadMapping = "030000005e040000d102000000000000,Xbox One Wired Controller,a:b0,b:b1,back:b9,dpdown:b12,dpleft:b13,dpright:b14,dpup:b11,guide:b10,leftshoulder:b4,leftstick:b6,lefttrigger:a2,leftx:a0,lefty:a1,rightshoulder:b5,rightstick:b7,righttrigger:a5,rightx:a3,righty:a4,start:b8,x:b2,y:b3,platform:Mac OS X,";
-        assert glfwUpdateGamepadMappings(xboxOneControllerGamepadMapping);
+        assert glfwUpdateGamepadMappings(ByteBuffer.wrap(xboxOneControllerGamepadMapping.getBytes(StandardCharsets.UTF_8)));
     }
 
     private void updateConnectedControllers(int jid, int event) {
