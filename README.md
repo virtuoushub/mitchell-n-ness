@@ -1,16 +1,25 @@
 # mitchell-n-ness
 ## run
+
 ### as maven exec task
-```mvnw exec:exec```
+
+- ```./mvnw exec:exec``` *macOS | \*nix*
+- ```mvnw exec:exec``` *Windows*
 
 ### as fat jar
-1 ```mvnw clean package```
 
-2.windows.nix
-  - ```java -jar ./target/mitchell-n-ness-0.1.0-SNAPSHOT-jar-with-dependencies.jar```
+- package
+  - ```./mvnw clean package``` *macOS | \*nix*
+  - ```mvnw clean package``` *Windows*
+#### windows | *nix
+```sh
+java -jar ./target/mitchell-n-ness-0.1.0-SNAPSHOT-jar-with-dependencies.jar
+```
+#### macos
 
-2.macos
-  - ```java -XstartOnFirstThread -jar ./target/mitchell-n-ness-0.1.0-SNAPSHOT-jar-with-dependencies.jar```
+```sh
+java -XstartOnFirstThread -jar ./target/mitchell-n-ness-0.1.0-SNAPSHOT-jar-with-dependencies.jar
+```
 
 ## useful resources
 * https://github.com/virtuoushub/awesome-gamedev
