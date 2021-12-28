@@ -126,7 +126,7 @@ public class Font {
             FloatBuffer x = stack.floats(0.0f);
             FloatBuffer y = stack.floats(getWindowHeight() -getFontHeight());
 
-            STBTTAlignedQuad q = STBTTAlignedQuad.mallocStack(stack);
+            STBTTAlignedQuad q = STBTTAlignedQuad.malloc(stack);
 
             int lineStart = 0;
 

@@ -121,7 +121,7 @@ public final class Truetype extends FontDemo {
             FloatBuffer x = stack.floats(0.0f);
             FloatBuffer y = stack.floats(0.0f);
 
-            STBTTAlignedQuad q = STBTTAlignedQuad.mallocStack(stack);
+            STBTTAlignedQuad q = STBTTAlignedQuad.malloc(stack);
 
             int lineStart = 0;
 
