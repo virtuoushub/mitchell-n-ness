@@ -9,6 +9,7 @@ import org.lwjgl.system.*;
 import org.slf4j.*;
 
 import java.nio.*;
+import java.util.Objects;
 
 import static com.colapietro.throwback.lwjgl.GLHelper.glClearColor;
 import static com.colapietro.throwback.lwjgl.demo.GLFWUtil.glfwInvoke;
@@ -252,7 +253,7 @@ public class HelloWorld {
             glfwFreeCallbacks(window);
             glfwDestroyWindow(window);
             glfwTerminate();
-            glfwSetErrorCallback(null).free();
+            Objects.requireNonNull(glfwSetErrorCallback(null)).free();
         } catch (IllegalStateException e) {
             LOGGER.error("{}", e);
         }
