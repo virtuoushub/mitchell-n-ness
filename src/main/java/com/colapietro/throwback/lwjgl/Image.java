@@ -73,7 +73,7 @@ public class Image {
     private float windowWidth;
     private float windowHeight;
     boolean lineBoundingBoxEnabled = HelloWorld.boundingBoxesEnabled; // FIXME
-    int angle = 0;
+    float angle = 0;
     float y = 0;
     float x = 0;
     private boolean wrapAroundEnabled = true;
