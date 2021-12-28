@@ -1,11 +1,10 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Truetype" type="Application" factoryName="Application" nameIsGenerated="true">
-    <option name="MAIN_CLASS_NAME" value="com.colapietro.throwback.lwjgl.demo.Truetype" />
+  <configuration default="false" name="App" type="Application" factoryName="Application" nameIsGenerated="true">
+    <option name="MAIN_CLASS_NAME" value="com.colapietro.throwback.App" />
     <module name="mitchell-n-ness" />
-    <option name="VM_PARAMETERS" value="-XstartOnFirstThread" />
     <extension name="coverage">
       <pattern>
-        <option name="PATTERN" value="com.colapietro.throwback.lwjgl.demo.*" />
+        <option name="PATTERN" value="com.colapietro.throwback.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>
