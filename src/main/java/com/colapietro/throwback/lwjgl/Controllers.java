@@ -72,7 +72,24 @@ public class Controllers {
     }
 
     void initControllers() {
-        updatePS4ControllerGamepadMapping();
+//        FIXME: not sure why this try/catch is needed. When running in IDEs
+//        using git hash c97c351168bbfe2e30540df1a823a5d852b980de
+//        the following error is observed:
+//
+//        java.lang.IllegalArgumentException: Missing termination
+//        at org.lwjgl.system.Checks.assertNT(Checks.java:196)
+//        at org.lwjgl.system.Checks.checkNT1(Checks.java:227)
+//        at org.lwjgl.glfw.GLFW.glfwUpdateGamepadMappings(GLFW.java:4588)
+//        at com.colapietro.throwback.lwjgl.Controllers.updatePS4ControllerGamepadMapping(Controllers.java:93)
+//        at com.colapietro.throwback.lwjgl.Controllers.initControllers(Controllers.java:76)
+//        at com.colapietro.throwback.lwjgl.HelloWorld.init(HelloWorld.java:108)
+//        at com.colapietro.throwback.lwjgl.HelloWorld.run(HelloWorld.java:68)
+//        at com.colapietro.throwback.lwjgl.HelloWorld.main(HelloWorld.java:61)
+        try {
+            updatePS4ControllerGamepadMapping();
+        } catch (IllegalArgumentException e) {
+            LOGGER.warn("AFAIK following stack trace is safe to ignore, although code was unable to map controllers via updatePS4ControllerGamepadMapping", e);
+        }
         assert NUMBER_OF_SUPPORTED_GLFW_JOYSTICKS == 16;
         controllers = new HashSet<>(NUMBER_OF_SUPPORTED_GLFW_JOYSTICKS);
         controllersAdded = new ConcurrentHashMap<>(NUMBER_OF_SUPPORTED_GLFW_JOYSTICKS);
