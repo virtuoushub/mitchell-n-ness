@@ -1,22 +1,26 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Image" type="Application" factoryName="Application" nameIsGenerated="true">
-    <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
+    <option name="MAIN_CLASS_NAME" value="com.colapietro.throwback.lwjgl.demo.Image" />
+    <module name="mitchell-n-ness" />
+    <option name="VM_PARAMETERS" value="-XstartOnFirstThread" />
+    <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="com.colapietro.throwback.lwjgl.demo.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>
-    <option name="MAIN_CLASS_NAME" value="com.colapietro.throwback.lwjgl.demo.Image" />
-    <option name="VM_PARAMETERS" value="-XstartOnFirstThread" />
-    <option name="PROGRAM_PARAMETERS" value="" />
-    <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
-    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-    <option name="ALTERNATIVE_JRE_PATH" />
-    <option name="ENABLE_SWING_INSPECTOR" value="false" />
-    <option name="ENV_VARIABLES" />
-    <option name="PASS_PARENT_ENVS" value="true" />
-    <module name="mitchell-n-ness" />
-    <envs />
-    <method />
+    <extension name="net.ashald.envfile">
+      <option name="IS_ENABLED" value="false" />
+      <option name="IS_SUBST" value="false" />
+      <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+      <option name="IS_IGNORE_MISSING_FILES" value="false" />
+      <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+      <ENTRIES>
+        <ENTRY IS_ENABLED="true" PARSER="runconfig" />
+      </ENTRIES>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
   </configuration>
 </component>
