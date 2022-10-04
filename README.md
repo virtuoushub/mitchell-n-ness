@@ -1,4 +1,20 @@
 # mitchell-n-ness
+
+## setup
+
+```sh
+curl -s https://get.sdkman.io | bash
+```
+
+see also:
+
+- https://sdkman.io/install
+- https://github.com/sdkman/sdkman-cli
+
+```sh
+sdk install java 17.0.4.1-tem
+```
+
 ## run
 
 ### as maven exec task
