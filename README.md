@@ -19,18 +19,21 @@ sdk install java 17.0.4.1-tem
 
 ### as maven exec task
 
-- ```./mvnw exec:exec``` *macOS | \*nix*
-- ```mvnw exec:exec``` *Windows*
+- `./mvnw exec:exec` _macOS | \*nix_
+- `mvnw exec:exec` _Windows_
 
 ### as fat jar
 
 - package
-  - ```./mvnw clean package``` *macOS | \*nix*
-  - ```mvnw clean package``` *Windows*
-#### windows | *nix
+  - `./mvnw clean package` _macOS | \*nix_
+  - `mvnw clean package` _Windows_
+
+#### windows | \*nix
+
 ```sh
 java -jar ./target/mitchell-n-ness-0.1.0-SNAPSHOT-jar-with-dependencies.jar
 ```
+
 #### macos
 
 ```sh
