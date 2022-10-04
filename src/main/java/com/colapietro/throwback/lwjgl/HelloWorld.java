@@ -1,6 +1,5 @@
 package com.colapietro.throwback.lwjgl;
 
-
 import org.lwjgl.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
@@ -25,7 +24,8 @@ import static org.lwjgl.system.MemoryUtil.*;
 /**
  * @author Peter Colapietro.
  *
- * <a href="https://stackoverflow.com/q/2225737">ERROR: JDWP Unable to get JNI 1.2 environment</a>
+ *         <a href="https://stackoverflow.com/q/2225737">ERROR: JDWP Unable to
+ *         get JNI 1.2 environment</a>
  */
 public class HelloWorld {
 
@@ -75,7 +75,6 @@ public class HelloWorld {
             }
         }
 
-
     }
 
     private void init() {
@@ -115,8 +114,8 @@ public class HelloWorld {
         glfwSetWindowSizeCallback(window, this::windowSizeChanged);
         glfwSetFramebufferSizeCallback(window, HelloWorld::framebufferSizeChanged);
 
-
-        // Setup a key callback. It will be called every time a key is pressed, repeated or released.
+        // Setup a key callback. It will be called every time a key is pressed, repeated
+        // or released.
         glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
             if ( key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE ) {
                 glfwSetWindowShouldClose(window, true); // We will detect this in the rendering loop
@@ -133,13 +132,16 @@ public class HelloWorld {
             if ( (key == GLFW_KEY_DOWN || key == GLFW_KEY_S)) { //&& (action == GLFW_PRESS || action == GLFW_REPEAT)) {
                 image.y += movementSpeed;
             }
-            if ( (key == GLFW_KEY_LEFT_SHIFT || key == GLFW_KEY_Q)) { //&& (action == GLFW_PRESS || action == GLFW_REPEAT)) {
+            if ((key == GLFW_KEY_LEFT_SHIFT || key == GLFW_KEY_Q)) { // && (action == GLFW_PRESS || action ==
+                                                                     // GLFW_REPEAT)) {
                 image.angle -= rotationSpeed;
             }
-            if ( (key == GLFW_KEY_RIGHT_SHIFT || key == GLFW_KEY_E)) { //&& (action == GLFW_PRESS || action == GLFW_REPEAT)) {
+            if ((key == GLFW_KEY_RIGHT_SHIFT || key == GLFW_KEY_E)) { // && (action == GLFW_PRESS || action ==
+                                                                      // GLFW_REPEAT)) {
                 image.angle += rotationSpeed;
             }
-            if ( (key == GLFW_KEY_LEFT_SUPER || key == GLFW_KEY_RIGHT_SUPER) && (action == GLFW_PRESS) && (mods == GLFW_MOD_SUPER)) {
+            if ((key == GLFW_KEY_LEFT_SUPER || key == GLFW_KEY_RIGHT_SUPER) && (action == GLFW_PRESS)
+                    && (mods == GLFW_MOD_SUPER)) {
                 font.setLineBoundingBoxEnabled(!font.getLineBoundingBoxEnabled());
                 image.lineBoundingBoxEnabled = !image.lineBoundingBoxEnabled;
             }
@@ -163,8 +165,7 @@ public class HelloWorld {
             glfwSetWindowPos(
                     window,
                     (vidmode.width() - pWidth.get(0)) / 2,
-                    (vidmode.height() - pHeight.get(0)) / 2
-            );
+                    (vidmode.height() - pHeight.get(0)) / 2);
         }
         glfwMakeContextCurrent(window);
         GL.createCapabilities();
@@ -266,7 +267,6 @@ public class HelloWorld {
         this.font.setWindowHeight(height);
         this.image.setWindowHeight(height);
         this.image.setWindowWidth(width);
-
 
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
