@@ -1,5 +1,7 @@
 # mitchell-n-ness
 
+welcome to 🎃 hacktoberfest
+
 ## setup
 
 ```sh
