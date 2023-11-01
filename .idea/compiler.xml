@@ -9,8 +9,5 @@
         <module name="mitchell-n-ness" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="mitchell-n-ness" target="11" />
-    </bytecodeTargetLevel>
   </component>
 </project>
