@@ -1,6 +1,6 @@
 # mitchell-n-ness
 
-welcome to 🎃 hacktoberfest
+learn more about [🎃 hacktoberfest](https://hacktoberfest.com/).
 
 ## setup
 
