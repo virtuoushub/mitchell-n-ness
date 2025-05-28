@@ -48,7 +48,7 @@
     <lwjgl.version>3.3.6</lwjgl.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <logback-classic.version>1.5.18</logback-classic.version>
-    <exec-maven-plugin.version>3.5.0</exec-maven-plugin.version>
+    <exec-maven-plugin.version>3.5.1</exec-maven-plugin.version>
     <mainClass>com.colapietro.throwback.lwjgl.HelloWorld</mainClass>
   </properties>
 
